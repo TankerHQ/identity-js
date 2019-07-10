@@ -10,6 +10,14 @@
   "scripts": {
     "test": "cd ../..; yarn test:identity"
   },
+  "homepage": "https://tanker.io/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TankerHQ/sdk-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/TankerHQ/sdk-js/issues"
+  },
   "dependencies": {
     "@babel/runtime-corejs2": "7.5.4",
     "@tanker/crypto": "0.0.1",
