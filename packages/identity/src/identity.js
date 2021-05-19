@@ -290,3 +290,10 @@ export async function getPublicIdentity(tankerIdentity: b64string): Promise<b64s
 
   throw new InvalidArgument(`Invalid secret identity provided: ${tankerIdentity}`);
 }
+
+export function upgradeIdentity(tankerIdentity: b64string): b64string {
+  if (!tankerIdentity || typeof tankerIdentity !== 'string')
+    throw new InvalidArgument('tankerIdentity', 'b64string', tankerIdentity);
+  const identity = _deserializeIdentity(tankerIdentity);
+  return _serializeIdentity(identity);
+}

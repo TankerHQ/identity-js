@@ -7,7 +7,7 @@ import {
   _deserializeIdentity, _deserializePermanentIdentity, _deserializeProvisionalIdentity,
   _deserializePublicIdentity, _splitProvisionalAndPermanentPublicIdentities,
   _serializeIdentity,
-  createIdentity, createProvisionalIdentity, getPublicIdentity,
+  createIdentity, createProvisionalIdentity, getPublicIdentity, upgradeIdentity
 } from '../identity';
 import { obfuscateUserId } from '../userId';
 import { assertUserSecret } from '../userSecret';
@@ -109,6 +109,18 @@ describe('Identity', () => {
     it('can parse both types of secret identities with _deserializeIdentity', () => {
       expect(_deserializeIdentity(goodPermanentIdentity)).to.deep.equal(_deserializePermanentIdentity(goodPermanentIdentity));
       expect(_deserializeIdentity(goodProvisionalIdentity)).to.deep.equal(_deserializeProvisionalIdentity(goodProvisionalIdentity));
+    });
+
+    it('can upgrade identities', async () => {
+      const oldPermanentIdentity = 'eyJkZWxlZ2F0aW9uX3NpZ25hdHVyZSI6IlU5V1FvbEN2UnlqVDhvUjJQUW1kMVdYTkNpMHFtTDEyaE5ydEdhYllSRVdpcnk1MmtXeDFBZ1l6a0x4SDZncG8zTWlBOXIrK3pobm1vWWRFSjArSkN3PT0iLCJlcGhlbWVyYWxfcHJpdmF0ZV9zaWduYXR1cmVfa2V5IjoiakVEVDR3UUNjMURGd29kWE5QSEZDbG5kVFBuRnVGbVhoQnQraXNLVTRacGVIZUxURU5PbXZjZGUwSFpEblh0QXEvZHJNM05jc3RjeDBrTk5JZmh0M2c9PSIsImVwaGVtZXJhbF9wdWJsaWNfc2lnbmF0dXJlX2tleSI6IlhoM2kweERUcHIzSFh0QjJRNTE3UUt2M2F6TnpYTExYTWRKRFRTSDRiZDQ9IiwidGFyZ2V0IjoidXNlciIsInRydXN0Y2hhaW5faWQiOiJ0cG94eU56aDBoVTlHMmk5YWdNdkh5eWQrcE82ekdDak85QmZockNMamQ0PSIsInVzZXJfc2VjcmV0IjoiN0ZTZi9uMGU3NlFUM3MwRGt2ZXRSVlZKaFhaR0VqT3hqNUVXQUZleHZqST0iLCJ2YWx1ZSI6IlJEYTBlcTRYTnVqNXRWN2hkYXBqT3hobWhlVGg0UUJETnB5NFN2eTlYb2s9In0=';
+      const oldProvisionalIdentity = 'eyJwcml2YXRlX2VuY3J5cHRpb25fa2V5IjoiNFFCNVRXbXZjQnJnZXlERExoVUxJTlU2dGJxQU9FUTh2OXBqRGtQY3liQT0iLCJwcml2YXRlX3NpZ25hdHVyZV9rZXkiOiJVbW5ZdXZkVGFMWUcwYStKYURwWTZvanc0LzJMbDh6c21yYW1WQzRmdXFSYnRBUkFHNzBWZHhjaWs2Q3JyYTAvQUdMSVVCdWxQV3NDdTRQU0g4MnRNQT09IiwicHVibGljX2VuY3J5cHRpb25fa2V5IjoiLzJqNGRJM3I4UGx2Q04zdVc0SGhBNXdCdE1LT2NBQ2QzOEs2TjBxK21GVT0iLCJwdWJsaWNfc2lnbmF0dXJlX2tleSI6Ilc3UUVRQnU5RlhjWElwT2dxNjJ0UHdCaXlGQWJwVDFyQXJ1RDBoL05yVEE9IiwidGFyZ2V0IjoiZW1haWwiLCJ0cnVzdGNoYWluX2lkIjoidHBveHlOemgwaFU5RzJpOWFnTXZIeXlkK3BPNnpHQ2pPOUJmaHJDTGpkND0iLCJ2YWx1ZSI6ImJyZW5kYW4uZWljaEB0YW5rZXIuaW8ifQ==';
+      const oldPublicIdentity = 'eyJ0YXJnZXQiOiJ1c2VyIiwidHJ1c3RjaGFpbl9pZCI6InRwb3h5TnpoMGhVOUcyaTlhZ012SHl5ZCtwTzZ6R0NqTzlCZmhyQ0xqZDQ9IiwidmFsdWUiOiJSRGEwZXE0WE51ajV0VjdoZGFwak94aG1oZVRoNFFCRE5weTRTdnk5WG9rPSJ9';
+      const oldPublicProvisionalIdentity = 'eyJwdWJsaWNfZW5jcnlwdGlvbl9rZXkiOiIvMmo0ZEkzcjhQbHZDTjN1VzRIaEE1d0J0TUtPY0FDZDM4SzZOMHErbUZVPSIsInB1YmxpY19zaWduYXR1cmVfa2V5IjoiVzdRRVFCdTlGWGNYSXBPZ3E2MnRQd0JpeUZBYnBUMXJBcnVEMGgvTnJUQT0iLCJ0YXJnZXQiOiJlbWFpbCIsInRydXN0Y2hhaW5faWQiOiJ0cG94eU56aDBoVTlHMmk5YWdNdkh5eWQrcE82ekdDak85QmZockNMamQ0PSIsInZhbHVlIjoiYnJlbmRhbi5laWNoQHRhbmtlci5pbyJ9';
+
+      expect(upgradeIdentity(oldPermanentIdentity)).to.deep.equal(goodPermanentIdentity);
+      expect(upgradeIdentity(oldProvisionalIdentity)).to.deep.equal(goodProvisionalIdentity);
+      expect(upgradeIdentity(oldPublicIdentity)).to.deep.equal(goodPublicIdentity);
+      expect(upgradeIdentity(oldPublicProvisionalIdentity)).to.deep.equal(goodPublicProvisionalIdentity);
     });
   });
 
@@ -225,19 +237,23 @@ describe('Identity', () => {
   });
 
   describe('_splitProvisionalAndPermanentPublicIdentities', () => {
+    let b64Identity;
     let identity;
+    let b64PublicIdentity;
     let publicIdentity;
+    let b64ProvisionalIdentity;
     let provisionalIdentity;
+    let b64PublicProvisionalIdentity;
     let publicProvisionalIdentity;
 
     before(async () => {
-      const b64Identity = await createIdentity(trustchain.id, trustchain.sk, userId);
+      b64Identity = await createIdentity(trustchain.id, trustchain.sk, userId);
       identity = _deserializePermanentIdentity(b64Identity);
-      const b64PublicIdentity = await getPublicIdentity(b64Identity);
+      b64PublicIdentity = await getPublicIdentity(b64Identity);
       publicIdentity = _deserializePublicIdentity(b64PublicIdentity);
-      const b64ProvisionalIdentity = await createProvisionalIdentity(trustchain.id, userEmail);
+      b64ProvisionalIdentity = await createProvisionalIdentity(trustchain.id, userEmail);
       provisionalIdentity = _deserializeProvisionalIdentity(b64ProvisionalIdentity);
-      const b64PublicProvisionalIdentity = await getPublicIdentity(b64ProvisionalIdentity);
+      b64PublicProvisionalIdentity = await getPublicIdentity(b64ProvisionalIdentity);
       publicProvisionalIdentity = _deserializePublicIdentity(b64PublicProvisionalIdentity);
     });
 
