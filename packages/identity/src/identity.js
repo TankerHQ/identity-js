@@ -1,12 +1,12 @@
 // @flow
-import { ready as cryptoReady, tcrypto, utils, type b64string } from '@tanker/crypto';
+import { generichash, ready as cryptoReady, tcrypto, utils, type b64string } from '@tanker/crypto';
 import { InternalError, InvalidArgument } from '@tanker/errors';
 
 import { obfuscateUserId } from './userId';
 import { createUserSecretB64 } from './userSecret';
 
 type PermanentIdentityTarget = 'user';
-type ProvisionalIdentityTarget = 'email';
+type ProvisionalIdentityTarget = 'email' | 'hashed_phone_number';
 
 export type PublicPermanentIdentity = {|
   trustchain_id: b64string,
@@ -64,8 +64,12 @@ function isPublicPermanentIdentity(identity: SecretPermanentIdentity | PublicPer
   return !('user_secret' in identity);
 }
 
-function isProvisionalIdentity(identity: SecretIdentity | PublicIdentity): bool %checks {
-  return identity.target === 'email';
+export function isProvisionalIdentity(identity: SecretIdentity | PublicIdentity): bool %checks {
+  return identity.target === 'email' || identity.target === 'hashed_phone_number';
+}
+
+export function isTargetHashed(identity: SecretIdentity | PublicIdentity): bool %checks {
+  return identity.target === 'hashed_phone_number';
 }
 
 const rubyJsonOrder = {
@@ -245,11 +249,13 @@ export async function createIdentity(appId: b64string, appSecret: b64string, use
   return _serializeIdentity(permanentIdentity);
 }
 
-export async function createProvisionalIdentity(appId: b64string, email: string): Promise<b64string> {
+export async function createProvisionalIdentity(appId: b64string, target: ProvisionalIdentityTarget, value: string): Promise<b64string> {
   if (!appId || typeof appId !== 'string')
     throw new InvalidArgument('appId', 'b64string', appId);
-  if (!email || typeof email !== 'string')
-    throw new InvalidArgument('email', 'string', email);
+  if (target !== 'email' && target !== 'hashed_phone_number')
+    throw new InvalidArgument('target', '"email" | "hashed_phone_number"', target);
+  if (!value || typeof value !== 'string')
+    throw new InvalidArgument('value', 'string', value);
 
   await cryptoReady;
 
@@ -258,8 +264,8 @@ export async function createProvisionalIdentity(appId: b64string, email: string)
 
   const provisionalIdentity: SecretProvisionalIdentity = {
     trustchain_id: appId,
-    target: 'email',
-    value: email,
+    target,
+    value,
     public_encryption_key: utils.toBase64(encryptionKeys.publicKey),
     private_encryption_key: utils.toBase64(encryptionKeys.privateKey),
     public_signature_key: utils.toBase64(signatureKeys.publicKey),
@@ -267,6 +273,16 @@ export async function createProvisionalIdentity(appId: b64string, email: string)
   };
 
   return _serializeIdentity(provisionalIdentity);
+}
+
+async function _getPublicHashedValueFromSecretProvisional(identity: SecretProvisionalIdentity): Promise<b64string> { // eslint-disable-line no-underscore-dangle
+  if (identity.target === 'hashed_phone_number') {
+    const salt = generichash(utils.fromBase64(identity.private_signature_key));
+    const value = utils.concatArrays(salt, utils.fromString(identity.value));
+    return utils.toBase64(await generichash(value));
+  }
+
+  throw new InternalError(`Unsupported identity target to hash: ${identity.target}`);
 }
 
 // Note: tankerIdentity is a Tanker identity created by either createIdentity() or createProvisionalIdentity()
@@ -285,7 +301,11 @@ export async function getPublicIdentity(tankerIdentity: b64string): Promise<b64s
 
   if (identity.public_signature_key && identity.public_encryption_key) {
     const { trustchain_id, target, value, public_signature_key, public_encryption_key } = identity; // eslint-disable-line camelcase
-    return _serializeIdentity({ trustchain_id, target, value, public_signature_key, public_encryption_key });
+    let hashedValue: ?string;
+    if (isTargetHashed(identity)) {
+      hashedValue = await _getPublicHashedValueFromSecretProvisional(identity);
+    }
+    return _serializeIdentity({ trustchain_id, target, value: hashedValue || value, public_signature_key, public_encryption_key });
   }
 
   throw new InvalidArgument(`Invalid secret identity provided: ${tankerIdentity}`);

@@ -10,6 +10,7 @@ export {
   _deserializeIdentity, _deserializePermanentIdentity, _deserializeProvisionalIdentity,
   _deserializePublicIdentity, _splitProvisionalAndPermanentPublicIdentities,
   createIdentity, createProvisionalIdentity, getPublicIdentity,
+  isProvisionalIdentity,
 } from './identity';
 
 export { obfuscateUserId } from './userId';

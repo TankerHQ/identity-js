@@ -29,16 +29,19 @@ The ID of a user in your application.
 <br /><br />
 
 ```javascript
-createProvisionalIdentity(appId, email);
+createProvisionalIdentity(appId, target, value);
 ```
 
-Create a Tanker provisional identity. It allows you to share a resource with a user who does not have an account in your application yet.
+Create a Tanker provisional identity using the given target and value. It allows you to share a resource with a user who does not have an account in your application yet.
 
 **appId**<br />
 The app ID. You can access it from the [Tanker dashboard](https://dashboard.tanker.io).
 
-**email**<br />
-The email of the potential recipient of the resource.
+**target**<br />
+The way to contact the recipient (eg. 'email', 'hashed_phone_number')
+
+**value**<br />
+The value of the potential recipient of the resource.
 <br /><br />
 
 ```javascript
