@@ -6,7 +6,8 @@ import { obfuscateUserId } from './userId';
 import { createUserSecretB64 } from './userSecret';
 
 type PermanentIdentityTarget = 'user';
-type ProvisionalIdentityTarget = 'email';
+type SecretProvisionalIdentityTarget = 'email';
+type PublicProvisionalIdentityTarget = 'email' | 'hashed_email';
 
 export type PublicPermanentIdentity = {|
   trustchain_id: b64string,
@@ -24,7 +25,7 @@ export type SecretPermanentIdentity = {|
 
 export type PublicProvisionalIdentity = {|
   trustchain_id: b64string,
-  target: ProvisionalIdentityTarget,
+  target: PublicProvisionalIdentityTarget,
   value: string,
   public_signature_key: b64string,
   public_encryption_key: b64string,
@@ -32,6 +33,7 @@ export type PublicProvisionalIdentity = {|
 
 export type SecretProvisionalIdentity = {|
   ...PublicProvisionalIdentity,
+  target: SecretProvisionalIdentityTarget,
   private_encryption_key: b64string,
   private_signature_key: b64string,
 |};
@@ -65,7 +67,7 @@ function isPublicPermanentIdentity(identity: SecretPermanentIdentity | PublicPer
 }
 
 function isProvisionalIdentity(identity: SecretIdentity | PublicIdentity): bool %checks {
-  return identity.target === 'email';
+  return !isPermanentIdentity(identity);
 }
 
 const rubyJsonOrder = {
