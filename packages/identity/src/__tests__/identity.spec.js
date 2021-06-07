@@ -1,5 +1,5 @@
 // @flow
-import { ready as cryptoReady, tcrypto, utils } from '@tanker/crypto';
+import { generichash, ready as cryptoReady, tcrypto, utils } from '@tanker/crypto';
 import { expect } from '@tanker/test-utils';
 
 import { InvalidArgument } from '../errors';
@@ -206,10 +206,11 @@ describe('Identity', () => {
         // $FlowIgnore We know a provisional identity is expected
         trustchain_id, target, value, public_signature_key, public_encryption_key, ...trail // eslint-disable-line camelcase
       } = _deserializePublicIdentity(b64PublicIdentity);
+      const hashedEmail = utils.toBase64(generichash(utils.fromString(userEmail)));
 
       expect(trustchain_id).to.equal(trustchain.id);
-      expect(target).to.equal('email');
-      expect(value).to.be.equal(userEmail);
+      expect(target).to.equal('hashed_email');
+      expect(value).to.be.equal(hashedEmail);
       expect(public_encryption_key).to.equal(provisionalIdentity.public_encryption_key);
       expect(public_signature_key).to.equal(provisionalIdentity.public_signature_key);
 
