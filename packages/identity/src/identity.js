@@ -1,7 +1,7 @@
 // @flow
 import { ready as cryptoReady, tcrypto, utils, type b64string } from '@tanker/crypto';
-import { InvalidArgument } from '@tanker/errors';
 
+import { InvalidArgument } from './errors';
 import { obfuscateUserId } from './userId';
 import { createUserSecretB64 } from './userSecret';
 
