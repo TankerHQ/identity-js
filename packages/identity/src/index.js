@@ -14,3 +14,4 @@ export {
 
 export { obfuscateUserId } from './userId';
 export { createUserSecretBinary, createUserSecretB64, assertUserSecret, USER_SECRET_SIZE } from './userSecret';
+export { TANKER_IDENTITY_SDK_VERSION as version } from './version';
