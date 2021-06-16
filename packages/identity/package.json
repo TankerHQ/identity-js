@@ -20,8 +20,7 @@
   },
   "dependencies": {
     "@babel/runtime-corejs3": "^7.9.0",
-    "@tanker/crypto": "0.0.1",
-    "@tanker/errors": "0.0.1"
+    "@tanker/crypto": "^2.15.0"
   },
   "devDependencies": {
     "@tanker/test-utils": "0.0.1"
