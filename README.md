@@ -1,14 +1,14 @@
 [license-badge]: https://img.shields.io/badge/License-Apache%202.0-blue.svg
 [license-link]: https://opensource.org/licenses/Apache-2.0
 
-[actions-badge]: https://github.com/TankerHQ/identity-node/actions/workflows/tests.yml/badge.svg
-[actions-link]: https://github.com/TankerHQ/identity-node/actions/workflows/tests.yml
+[actions-badge]: https://github.com/TankerHQ/identity-js/actions/workflows/tests.yml/badge.svg
+[actions-link]: https://github.com/TankerHQ/identity-js/actions/workflows/tests.yml
 
-[codecov-badge]: https://img.shields.io/codecov/c/github/TankerHQ/identity-node.svg?label=Coverage
-[codecov-link]: https://codecov.io/gh/TankerHQ/identity-node
+[codecov-badge]: https://img.shields.io/codecov/c/github/TankerHQ/identity-js.svg?label=Coverage
+[codecov-link]: https://codecov.io/gh/TankerHQ/identity-js
 
-[last-commit-badge]: https://img.shields.io/github/last-commit/TankerHQ/identity-node.svg?label=Last%20commit&logo=github
-[last-commit-link]: https://github.com/TankerHQ/identity-node/commits/master
+[last-commit-badge]: https://img.shields.io/github/last-commit/TankerHQ/identity-js.svg?label=Last%20commit&logo=github
+[last-commit-link]: https://github.com/TankerHQ/identity-js/commits/master
 
 [identity_npm-badge]: https://img.shields.io/npm/v/@tanker/identity.svg
 [identity_npm-link]: https://npmjs.com/package/@tanker/identity
@@ -39,7 +39,7 @@ It is available in multiple languages. This repository only contains the Javascr
 
 ## Contributing
 
-We welcome feedback, [bug reports](https://github.com/TankerHQ/identity-node/issues), and bug fixes in the form of [pull requests](https://github.com/TankerHQ/identity-node/pulls).
+We welcome feedback, [bug reports](https://github.com/TankerHQ/identity-js/issues), and bug fixes in the form of [pull requests](https://github.com/TankerHQ/identity-js/pulls).
 
 To build the JavaScript SDKs yourself, please follow the steps below.
 
@@ -56,12 +56,12 @@ yarn -v
 
 Clone this repository:
 ```bash
-git clone https://github.com/TankerHQ/identity-node.git
+git clone https://github.com/TankerHQ/identity-js.git
 ```
 
 Install dependencies:
 ```bash
-cd identity-node && yarn
+cd identity-js && yarn
 ```
 
 ### Test and lint
@@ -80,7 +80,7 @@ Before submitting your pull request, please make sure that your changes pass the
 
 For non-trivial changes, we highly recommend including extra tests.
 
-When you're ready, submit your [pull request](https://github.com/TankerHQ/identity-node/pulls), targeting the `master` branch of this repository.
+When you're ready, submit your [pull request](https://github.com/TankerHQ/identity-js/pulls), targeting the `master` branch of this repository.
 
 ## License
 
