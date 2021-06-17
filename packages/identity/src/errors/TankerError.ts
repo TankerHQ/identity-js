@@ -1,5 +1,3 @@
-// @flow
-
 export class TankerError extends Error {
   constructor(name: string = 'TankerError', message?: string) {
     super();
@@ -10,7 +8,7 @@ export class TankerError extends Error {
     }
   }
 
-  toString() {
+  override toString() {
     return `[Tanker] ${super.toString()}`;
   }
 }

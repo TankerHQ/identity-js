@@ -1,16 +1,16 @@
-// @flow
 import { ready as cryptoReady, utils } from '@tanker/crypto';
+import type { b64string } from '@tanker/crypto';
 import { expect } from '@tanker/test-utils';
-
 import { obfuscateUserId } from '../userId';
 import { createUserSecretBinary, assertUserSecret, USER_SECRET_SIZE } from '../userSecret';
 
-const { fromBase64, fromString } = utils;
-
+const {
+  fromBase64,
+  fromString,
+} = utils;
 describe('userSecret', () => {
-  let trustchainId;
-  let trustchainIdB64;
-
+  let trustchainId: Uint8Array;
+  let trustchainIdB64: b64string;
   before(async () => {
     await cryptoReady;
     trustchainIdB64 = 'uxTyZYP8OOYP13A4GQC4zfVr7hJz5tsF7YdMpd3PT8w=';
@@ -19,14 +19,12 @@ describe('userSecret', () => {
 
   it('should throw if bad arguments given to createUserSecretBinary', () => {
     [
-      // $FlowExpectedError
-      [], [undefined, 'fernand'], [trustchainIdB64], [trustchainIdB64, null]
+      [], [undefined, 'fernand'], [trustchainIdB64], [trustchainIdB64, null],
     ].forEach((badArgs, i) => {
-      // $FlowExpectedError
+      // @ts-expect-error
       expect(() => createUserSecretBinary(...badArgs), `bad args #${i}`).to.throw('Assertion error');
     });
   });
-
   // Warning! This test only works 99.9999999999999999999999999999999999999999999999999999999999999999999999999991% of the time!
   it('should give two different secrets for two requests', async () => {
     const secret1 = createUserSecretBinary(trustchainIdB64, 'mondego');
@@ -39,12 +37,10 @@ describe('userSecret', () => {
     const hashedUserId = obfuscateUserId(trustchainId, userId);
     const secret = createUserSecretBinary(trustchainIdB64, userId);
     const tooShortSecret = new Uint8Array(USER_SECRET_SIZE - 1);
-
     [
-      // $FlowExpectedError
-      [], [undefined, secret], [hashedUserId], [hashedUserId, null], [userId, secret], [hashedUserId, tooShortSecret]
+      [], [undefined, secret], [hashedUserId], [hashedUserId, null], [userId, secret], [hashedUserId, tooShortSecret],
     ].forEach((badArgs, i) => {
-      // $FlowExpectedError
+      // @ts-expect-error
       expect(() => assertUserSecret(...badArgs), `bad args #${i}`).to.throw('Assertion error');
     });
   });
@@ -64,14 +60,17 @@ describe('userSecret', () => {
   it('should reject secrets of the wrong user most of the time', async () => {
     const count = 10;
     let rejections = 0;
+
     for (let i = 0; i < count; ++i) {
       const secret = createUserSecretBinary(trustchainIdB64, 'villefort');
+
       try {
         assertUserSecret(obfuscateUserId(trustchainId, 'edmond'), secret);
       } catch (e) {
         rejections += 1;
       }
     }
+
     expect(rejections).that.which.does.have.to.be.above(count / 2);
   });
 });
