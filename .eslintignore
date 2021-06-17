@@ -2,4 +2,3 @@ node_modules
 packages/*/node_modules
 packages/*/build
 packages/**/dist
-src/flow

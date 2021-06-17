@@ -6,9 +6,8 @@
     "build": "yarn build:identity",
     "build:identity": "rollup --config packages/identity/config/rollup.js",
     "lint:js": "eslint \"packages/**/*.js\"",
-    "lint:flow": "flow check",
     "test": "mocha \"packages/**/src/**/*.spec.js\" --exit --require ./config/babel.require-hook.js --recursive --full-trace --trace-warnings --reporter=spec",
-    "proof": "yarn lint:js && yarn lint:flow && yarn test",
+    "proof": "yarn lint:js && yarn test",
     "coverage": "nyc --reporter=lcov --reporter=text-summary yarn test"
   },
   "dependencies": {
@@ -18,25 +17,29 @@
     "@babel/plugin-transform-flow-strip-types": "7.12.13",
     "@babel/plugin-transform-runtime": "7.12.15",
     "@babel/preset-env": "7.12.16",
+    "@babel/preset-typescript": "^7.14.5",
     "@babel/register": "7.12.13",
     "@rollup/plugin-babel": "5.3.0",
+    "@typescript-eslint/eslint-plugin": "^4.27.0",
+    "@typescript-eslint/parser": "^4.27.0",
     "babel-loader": "8.2.2",
     "babel-plugin-istanbul": "6.0.0",
     "codecov": "3.8.1",
     "colorette": "1.2.1",
-    "eslint": "7.20.0",
+    "eslint": "^7.28.0",
     "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-plugin-chai-expect": "2.2.0",
     "eslint-plugin-chai-friendly": "0.6.0",
     "eslint-plugin-flowtype": "5.2.0",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-mocha-no-only": "1.1.1",
-    "flow-bin": "0.131.0",
     "fs-extra": "9.1.0",
     "mocha": "8.3.0",
     "nyc": "15.1.0",
     "rollup": "2.41.2",
-    "rollup-plugin-local-resolve": "1.0.7"
+    "rollup-plugin-local-resolve": "1.0.7",
+    "typescript": "^4.3.3"
   },
   "workspaces": [
     "packages/*"
