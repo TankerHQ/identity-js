@@ -1,10 +1,23 @@
 import argparse
 from pathlib import Path
 import re
+import subprocess
 import sys
 
-import tankerci
-import tankerci.js
+import tbump
+import tbump.config
+
+
+def version_from_git_tag(git_tag: str) -> str:
+    prefix = "v"
+    assert git_tag.startswith(prefix), "tag should start with %s" % prefix
+    cfg_file = tbump.config.get_config_file(Path.cwd())
+    tbump_cfg = cfg_file.get_config()
+    regex = tbump_cfg.version_regex
+    version = git_tag[len(prefix) :]  # noqa
+    match = regex.match(version)
+    assert match, "Could not parse %s as a valid tag" % git_tag
+    return version
 
 
 def get_package_path(package_name: str) -> Path:
@@ -24,19 +37,20 @@ def version_to_npm_tag(version: str) -> str:
 
 
 def publish_npm_package(package_name: str, version: str) -> None:
-    package_path = get_package_path(package_name)
+    package_path = Path("packages/identity/dist")
     npm_tag = version_to_npm_tag(version)
-    tankerci.run(
-        "npm", "publish", "--access", "public", "--tag", npm_tag, cwd=package_path
+    subprocess.run(
+        ["npm", "publish", "--access", "public", "--tag", npm_tag],
+        cwd=package_path,
+        check=True,
     )
 
 
 def deploy_sdk(*, git_tag: str) -> None:
-    tankerci.js.yarn_install_deps()
-    version = tankerci.bump.version_from_git_tag(git_tag)
-    tankerci.bump.bump_files(version)
-
-    tankerci.js.yarn_build(delivery="identity", env="prod")
+    subprocess.run(["yarn", "install"], check=True)
+    version = version_from_git_tag(git_tag)
+    tbump.bump_files(version)
+    subprocess.run(["yarn", "build:identity"], check=True)
     publish_npm_package("@tanker/identity", version)
 
 

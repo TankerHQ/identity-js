@@ -6,16 +6,13 @@ authors = ["Tanker dev team <tech@tanker.io>"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-tankerci = { version = ">= 2021.6.3413", source = "gitlab" }
+tbump = "^6.3.2"
+
 
 [tool.poetry.dev-dependencies]
-flake8 = "^3.7.9"
-mypy = "0.790"
-
-[[tool.poetry.source]]
-name = "gitlab"
-url = "https://gitlab.com/api/v4/projects/20917546/packages/pypi/simple"
-
+black = "^21.6b0"
+flake8 = "^3.9.2"
+mypy = "^0.902"
 [build-system]
 requires = ["poetry>=0.12"]
 build-backend = "poetry.masonry.api"
