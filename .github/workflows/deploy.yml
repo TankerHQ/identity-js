@@ -1,0 +1,28 @@
+name: Deploy
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-node@v2
+        with:
+          node-version: 12
+      - name: Set up Python
+        uses: actions/setup-python@v1 
+        with: 
+          python-version: 3.8
+      - name: Install and configure poetry
+        run: |
+          python -m pip install poetry
+          python -m poetry config virtualenvs.create false
+      - name: Install python packages
+        run: python -m poetry install --no-dev
+      - name: Configure NPM permissions
+        run: echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > "${HOME}/.npmrc"
+      - name: Deploy
+        run: python -m poetry run python run-ci.py deploy --git-tag "$(git describe --tags)"
