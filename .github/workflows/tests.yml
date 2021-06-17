@@ -20,7 +20,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: ${{ matrix.node_version }}
-      - name: install packages
+      - name: Install packages
         run: yarn install
       - name: Tests on ${{ matrix.os }} with Node ${{ matrix.node_version }}
         run: yarn test
