@@ -1,12 +1,13 @@
 // @flow
-import { ready as cryptoReady, tcrypto, utils, type b64string } from '@tanker/crypto';
+import { ready as cryptoReady, tcrypto, utils, type b64string, generichash } from '@tanker/crypto';
 
 import { InvalidArgument } from './errors';
 import { obfuscateUserId } from './userId';
 import { createUserSecretB64 } from './userSecret';
 
 type PermanentIdentityTarget = 'user';
-type ProvisionalIdentityTarget = 'email';
+type SecretProvisionalIdentityTarget = 'email';
+type PublicProvisionalIdentityTarget = 'email' | 'hashed_email';
 
 export type PublicPermanentIdentity = {|
   trustchain_id: b64string,
@@ -24,7 +25,7 @@ export type SecretPermanentIdentity = {|
 
 export type PublicProvisionalIdentity = {|
   trustchain_id: b64string,
-  target: ProvisionalIdentityTarget,
+  target: PublicProvisionalIdentityTarget,
   value: string,
   public_signature_key: b64string,
   public_encryption_key: b64string,
@@ -32,6 +33,7 @@ export type PublicProvisionalIdentity = {|
 
 export type SecretProvisionalIdentity = {|
   ...PublicProvisionalIdentity,
+  target: SecretProvisionalIdentityTarget,
   private_encryption_key: b64string,
   private_signature_key: b64string,
 |};
@@ -65,7 +67,7 @@ function isPublicPermanentIdentity(identity: SecretPermanentIdentity | PublicPer
 }
 
 function isProvisionalIdentity(identity: SecretIdentity | PublicIdentity): bool %checks {
-  return identity.target === 'email';
+  return !isPermanentIdentity(identity);
 }
 
 const rubyJsonOrder = {
@@ -269,6 +271,16 @@ export async function createProvisionalIdentity(appId: b64string, email: string)
   return _serializeIdentity(provisionalIdentity);
 }
 
+async function _getPublicHashedValueFromSecretProvisional(identity: SecretProvisionalIdentity): Promise<b64string> { // eslint-disable-line no-underscore-dangle
+  /* eslint-disable no-else-return */ // eslint is too clever by half. Write your code for humans to read, not machines, and let us free ourselves from the tyranny of bad linters, my friends!
+  if (identity.target === 'email') {
+    return utils.toBase64(await generichash(utils.fromString(identity.value)));
+  } else {
+    throw new InvalidArgument(`Unsupported identity target to hash: ${identity.target}`);
+  }
+  /* eslint-enable no-else-return */
+}
+
 // Note: tankerIdentity is a Tanker identity created by either createIdentity() or createProvisionalIdentity()
 export async function getPublicIdentity(tankerIdentity: b64string): Promise<b64string> {
   if (!tankerIdentity || typeof tankerIdentity !== 'string')
@@ -284,7 +296,11 @@ export async function getPublicIdentity(tankerIdentity: b64string): Promise<b64s
   }
 
   if (identity.public_signature_key && identity.public_encryption_key) {
-    const { trustchain_id, target, value, public_signature_key, public_encryption_key } = identity; // eslint-disable-line camelcase
+    const { trustchain_id, public_signature_key, public_encryption_key } = identity; // eslint-disable-line camelcase
+    let { target } = identity;
+    const value = await _getPublicHashedValueFromSecretProvisional(identity);
+    if (target === 'email') // For compatibility reasons, for hashed_email pub prov ids, the private is just 'email'
+      target = 'hashed_email';
     return _serializeIdentity({ trustchain_id, target, value, public_signature_key, public_encryption_key });
   }
 
