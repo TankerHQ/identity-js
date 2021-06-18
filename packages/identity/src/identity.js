@@ -6,8 +6,8 @@ import { obfuscateUserId } from './userId';
 import { createUserSecretB64 } from './userSecret';
 
 type PermanentIdentityTarget = 'user';
-type SecretProvisionalIdentityTarget = 'email';
-type PublicProvisionalIdentityTarget = 'email' | 'hashed_email';
+type SecretProvisionalIdentityTarget = 'email' | 'phone_number';
+type PublicProvisionalIdentityTarget = 'email' | 'hashed_email' | 'phone_number';
 
 export type PublicPermanentIdentity = {|
   trustchain_id: b64string,
@@ -247,11 +247,16 @@ export async function createIdentity(appId: b64string, appSecret: b64string, use
   return _serializeIdentity(permanentIdentity);
 }
 
-export async function createProvisionalIdentity(appId: b64string, email: string): Promise<b64string> {
+export async function createProvisionalIdentity(appId: b64string, target: SecretProvisionalIdentityTarget, value: string): Promise<b64string> {
   if (!appId || typeof appId !== 'string')
     throw new InvalidArgument('appId', 'b64string', appId);
-  if (!email || typeof email !== 'string')
-    throw new InvalidArgument('email', 'string', email);
+  if (!target || typeof target !== 'string')
+    throw new InvalidArgument('target', 'string', target);
+  if (!value || typeof value !== 'string')
+    throw new InvalidArgument('value', 'string', value);
+
+  if (!['email', 'phone_number'].includes(target))
+    throw new InvalidArgument('Unsupported target for provisional identity');
 
   await cryptoReady;
 
@@ -260,8 +265,8 @@ export async function createProvisionalIdentity(appId: b64string, email: string)
 
   const provisionalIdentity: SecretProvisionalIdentity = {
     trustchain_id: appId,
-    target: 'email',
-    value: email,
+    target,
+    value,
     public_encryption_key: utils.toBase64(encryptionKeys.publicKey),
     private_encryption_key: utils.toBase64(encryptionKeys.privateKey),
     public_signature_key: utils.toBase64(signatureKeys.publicKey),
@@ -275,6 +280,9 @@ async function _getPublicHashedValueFromSecretProvisional(identity: SecretProvis
   /* eslint-disable no-else-return */ // eslint is too clever by half. Write your code for humans to read, not machines, and let us free ourselves from the tyranny of bad linters, my friends!
   if (identity.target === 'email') {
     return utils.toBase64(await generichash(utils.fromString(identity.value)));
+  } else if (identity.target === 'phone_number') {
+    const hashSalt = await generichash(utils.fromBase64(identity.private_signature_key));
+    return utils.toBase64(await generichash(utils.concatArrays(hashSalt, utils.fromString(identity.value))));
   } else {
     throw new InvalidArgument(`Unsupported identity target to hash: ${identity.target}`);
   }

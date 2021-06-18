@@ -186,7 +186,7 @@ describe('Identity', () => {
     let b64Identity;
 
     before(async () => {
-      b64Identity = await createProvisionalIdentity(trustchain.id, userEmail);
+      b64Identity = await createProvisionalIdentity(trustchain.id, 'email', userEmail);
     });
 
     it('returns a tanker provisional identity', async () => {
@@ -221,16 +221,16 @@ describe('Identity', () => {
 
     it('throws with invalid app ID', async () => {
       // $FlowExpectedError
-      await expect(createProvisionalIdentity(undefined, userEmail)).to.be.rejectedWith(InvalidArgument);
+      await expect(createProvisionalIdentity(undefined, 'email', userEmail)).to.be.rejectedWith(InvalidArgument);
       // $FlowExpectedError
-      await expect(createProvisionalIdentity([], userEmail)).to.be.rejectedWith(InvalidArgument);
+      await expect(createProvisionalIdentity([], 'email', userEmail)).to.be.rejectedWith(InvalidArgument);
     });
 
     it('throws with invalid email', async () => {
       // $FlowExpectedError
-      await expect(createProvisionalIdentity(trustchain.id, undefined)).to.be.rejectedWith(InvalidArgument);
+      await expect(createProvisionalIdentity(trustchain.id, 'email', undefined)).to.be.rejectedWith(InvalidArgument);
       // $FlowExpectedError
-      await expect(createProvisionalIdentity(trustchain.id, [])).to.be.rejectedWith(InvalidArgument);
+      await expect(createProvisionalIdentity(trustchain.id, 'email', [])).to.be.rejectedWith(InvalidArgument);
     });
 
     it('throws with mismatching app ID and app secret', async () => {
@@ -254,7 +254,7 @@ describe('Identity', () => {
       identity = _deserializePermanentIdentity(b64Identity);
       b64PublicIdentity = await getPublicIdentity(b64Identity);
       publicIdentity = _deserializePublicIdentity(b64PublicIdentity);
-      b64ProvisionalIdentity = await createProvisionalIdentity(trustchain.id, userEmail);
+      b64ProvisionalIdentity = await createProvisionalIdentity(trustchain.id, 'email', userEmail);
       provisionalIdentity = _deserializeProvisionalIdentity(b64ProvisionalIdentity);
       b64PublicProvisionalIdentity = await getPublicIdentity(b64ProvisionalIdentity);
       publicProvisionalIdentity = _deserializePublicIdentity(b64PublicProvisionalIdentity);
