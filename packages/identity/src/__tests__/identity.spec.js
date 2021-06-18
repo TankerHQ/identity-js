@@ -34,6 +34,7 @@ describe('Identity', () => {
 
   const userId = 'b_eich';
   const userEmail = 'brendan.eich@tanker.io';
+  const userPhone = '+33611223344';
 
   let hashedUserEmail;
   let obfuscatedUserId;
@@ -49,6 +50,8 @@ describe('Identity', () => {
     const goodProvisionalIdentity = 'eyJ0cnVzdGNoYWluX2lkIjoidHBveHlOemgwaFU5RzJpOWFnTXZIeXlkK3BPNnpHQ2pPOUJmaHJDTGpkND0iLCJ0YXJnZXQiOiJlbWFpbCIsInZhbHVlIjoiYnJlbmRhbi5laWNoQHRhbmtlci5pbyIsInB1YmxpY19lbmNyeXB0aW9uX2tleSI6Ii8yajRkSTNyOFBsdkNOM3VXNEhoQTV3QnRNS09jQUNkMzhLNk4wcSttRlU9IiwicHJpdmF0ZV9lbmNyeXB0aW9uX2tleSI6IjRRQjVUV212Y0JyZ2V5RERMaFVMSU5VNnRicUFPRVE4djlwakRrUGN5YkE9IiwicHVibGljX3NpZ25hdHVyZV9rZXkiOiJXN1FFUUJ1OUZYY1hJcE9ncTYydFB3Qml5RkFicFQxckFydUQwaC9OclRBPSIsInByaXZhdGVfc2lnbmF0dXJlX2tleSI6IlVtbll1dmRUYUxZRzBhK0phRHBZNm9qdzQvMkxsOHpzbXJhbVZDNGZ1cVJidEFSQUc3MFZkeGNpazZDcnJhMC9BR0xJVUJ1bFBXc0N1NFBTSDgydE1BPT0ifQ==';
     const goodPublicIdentity = 'eyJ0cnVzdGNoYWluX2lkIjoidHBveHlOemgwaFU5RzJpOWFnTXZIeXlkK3BPNnpHQ2pPOUJmaHJDTGpkND0iLCJ0YXJnZXQiOiJ1c2VyIiwidmFsdWUiOiJSRGEwZXE0WE51ajV0VjdoZGFwak94aG1oZVRoNFFCRE5weTRTdnk5WG9rPSJ9';
     const goodPublicProvisionalIdentity = 'eyJ0cnVzdGNoYWluX2lkIjoidHBveHlOemgwaFU5RzJpOWFnTXZIeXlkK3BPNnpHQ2pPOUJmaHJDTGpkND0iLCJ0YXJnZXQiOiJoYXNoZWRfZW1haWwiLCJ2YWx1ZSI6IjB1MmM4dzhFSVpXVDJGelJOL3l5TTVxSWJFR1lUTkRUNVNrV1ZCdTIwUW89IiwicHVibGljX2VuY3J5cHRpb25fa2V5IjoiLzJqNGRJM3I4UGx2Q04zdVc0SGhBNXdCdE1LT2NBQ2QzOEs2TjBxK21GVT0iLCJwdWJsaWNfc2lnbmF0dXJlX2tleSI6Ilc3UUVRQnU5RlhjWElwT2dxNjJ0UHdCaXlGQWJwVDFyQXJ1RDBoL05yVEE9In0=';
+    const phoneNumberProvisionalIdentity = 'eyJ0cnVzdGNoYWluX2lkIjoidHBveHlOemgwaFU5RzJpOWFnTXZIeXlkK3BPNnpHQ2pPOUJmaHJDTGpkND0iLCJ0YXJnZXQiOiJwaG9uZV9udW1iZXIiLCJ2YWx1ZSI6IiszMzYxMTIyMzM0NCIsInB1YmxpY19lbmNyeXB0aW9uX2tleSI6Im42bTlYNUxmMFpuYXo4ZjArc2NoTElCTm0rcGlQaG5zWXZBdlh3MktFQXc9IiwicHJpdmF0ZV9lbmNyeXB0aW9uX2tleSI6InRWVFM5bkh4cjJNZFZ1VFI1Y2x3dzBFWGJ3aXM4SGl4Z1BJTmJRSngxVTQ9IiwicHVibGljX3NpZ25hdHVyZV9rZXkiOiJqcklEaWdTQ25BaTNHbDltSUFTbEFpU2hLQzdkQkxGVVpQOUN4TEdzYkg4PSIsInByaXZhdGVfc2lnbmF0dXJlX2tleSI6IlFIcWNMcjhicjZNM2JQblFtUWczcStxSENycDA1RGJjQnBMUGFUWlkwYTZPc2dPS0JJS2NDTGNhWDJZZ0JLVUNKS0VvTHQwRXNWUmsvMExFc2F4c2Z3PT0ifQ==';
+    const phoneNumberPublicProvisionalIdentity = 'eyJ0cnVzdGNoYWluX2lkIjoidHBveHlOemgwaFU5RzJpOWFnTXZIeXlkK3BPNnpHQ2pPOUJmaHJDTGpkND0iLCJ0YXJnZXQiOiJwaG9uZV9udW1iZXIiLCJ2YWx1ZSI6IkplYWlRQWg4eDdqY2lvVTJtNGloeStDc0hKbHlXKzRWVlNTczVTSEZVVHc9IiwicHVibGljX2VuY3J5cHRpb25fa2V5IjoibjZtOVg1TGYwWm5hejhmMCtzY2hMSUJObStwaVBobnNZdkF2WHcyS0VBdz0iLCJwdWJsaWNfc2lnbmF0dXJlX2tleSI6ImpySURpZ1NDbkFpM0dsOW1JQVNsQWlTaEtDN2RCTEZVWlA5Q3hMR3NiSDg9In0=';
 
     it('can parse a valid permanent identity', () => {
       const identity = _deserializePermanentIdentity(goodPermanentIdentity);
@@ -106,6 +109,41 @@ describe('Identity', () => {
       // $FlowIgnore hidden property
       expect(identity.serializedIdentity).to.equal(goodPublicProvisionalIdentity);
       expect(_serializeIdentity(identity)).to.equal(goodPublicProvisionalIdentity);
+    });
+
+    it('can parse a valid phone_number provisional identity', () => {
+      const identity = _deserializeProvisionalIdentity(phoneNumberProvisionalIdentity);
+
+      expect(identity.trustchain_id).to.be.equal(trustchain.id);
+      expect(identity.target).to.be.equal('phone_number');
+      expect(identity.value).to.equal(userPhone);
+      expect(identity.public_signature_key).to.equal('jrIDigSCnAi3Gl9mIASlAiShKC7dBLFUZP9CxLGsbH8=');
+      expect(identity.private_signature_key).to.equal('QHqcLr8br6M3bPnQmQg3q+qHCrp05DbcBpLPaTZY0a6OsgOKBIKcCLcaX2YgBKUCJKEoLt0EsVRk/0LEsaxsfw==');
+      expect(identity.public_encryption_key).to.equal('n6m9X5Lf0Znaz8f0+schLIBNm+piPhnsYvAvXw2KEAw=');
+      expect(identity.private_encryption_key).to.equal('tVTS9nHxr2MdVuTR5clww0EXbwis8HixgPINbQJx1U4=');
+
+      // $FlowIgnore hidden property
+      expect(identity.serializedIdentity).to.equal(phoneNumberProvisionalIdentity);
+      expect(_serializeIdentity(identity)).to.equal(phoneNumberProvisionalIdentity);
+    });
+
+    it('can parse a valid phone_number public provisional identity', async () => {
+      const privIdentity = _deserializeProvisionalIdentity(phoneNumberProvisionalIdentity);
+      const identity = _deserializeProvisionalIdentity(phoneNumberPublicProvisionalIdentity);
+
+      const hashSalt = await generichash(utils.fromBase64(privIdentity.private_signature_key));
+      const hashedPhone = utils.toBase64(await generichash(utils.concatArrays(hashSalt, utils.fromString(userPhone))));
+
+      expect(identity.trustchain_id).to.be.equal(trustchain.id);
+      expect(identity.target).to.be.equal('phone_number');
+      expect(identity.value).to.equal(hashedPhone);
+      expect(identity.public_signature_key).to.equal('jrIDigSCnAi3Gl9mIASlAiShKC7dBLFUZP9CxLGsbH8=');
+      expect(identity.public_encryption_key).to.equal('n6m9X5Lf0Znaz8f0+schLIBNm+piPhnsYvAvXw2KEAw=');
+
+      // $FlowIgnore hidden property
+      expect(identity.serializedIdentity).to.equal(phoneNumberPublicProvisionalIdentity);
+      expect(_serializeIdentity(identity)).to.equal(phoneNumberPublicProvisionalIdentity);
+      expect(await getPublicIdentity(phoneNumberProvisionalIdentity)).to.equal(phoneNumberPublicProvisionalIdentity);
     });
 
     it('can parse both types of secret identities with _deserializeIdentity', () => {
@@ -184,9 +222,16 @@ describe('Identity', () => {
 
   describe('create provisional', () => {
     let b64Identity;
+    let b64SmsIdentity;
 
     before(async () => {
       b64Identity = await createProvisionalIdentity(trustchain.id, 'email', userEmail);
+      b64SmsIdentity = await createProvisionalIdentity(trustchain.id, 'phone_number', userPhone);
+    });
+
+    it('cannot create a provisional with an invalid target', async () => {
+      // $FlowIgnore Checking that invalid arguments result in errors may require passing invalid arguments. Don't try this at home.
+      await expect(createProvisionalIdentity(trustchain.id, 'invalid', 'whatever')).to.be.rejectedWith(InvalidArgument);
     });
 
     it('returns a tanker provisional identity', async () => {
@@ -213,6 +258,37 @@ describe('Identity', () => {
       expect(trustchain_id).to.equal(trustchain.id);
       expect(target).to.equal('hashed_email');
       expect(value).to.be.equal(hashedEmail);
+      expect(public_encryption_key).to.equal(provisionalIdentity.public_encryption_key);
+      expect(public_signature_key).to.equal(provisionalIdentity.public_signature_key);
+
+      expect(trail).to.be.empty;
+    });
+
+    it('returns a tanker sms provisional identity', async () => {
+      const { trustchain_id, value, target, public_signature_key, public_encryption_key, private_signature_key, private_encryption_key } = _deserializeProvisionalIdentity(b64SmsIdentity); // eslint-disable-line camelcase
+      expect(trustchain_id).to.equal(trustchain.id);
+      expect(target).to.be.equal('phone_number');
+      expect(value).to.be.equal(userPhone);
+      expect(public_encryption_key).to.be.a('string').that.is.not.empty;
+      expect(private_encryption_key).to.be.a('string').that.is.not.empty;
+      expect(public_signature_key).to.be.a('string').that.is.not.empty;
+      expect(private_signature_key).to.be.a('string').that.is.not.empty;
+    });
+
+    it('returns a tanker public identity from a tanker sms provisional identity', async () => {
+      const b64PublicIdentity = await getPublicIdentity(b64SmsIdentity);
+
+      const provisionalIdentity = _deserializeProvisionalIdentity(b64SmsIdentity);
+      const {
+        // $FlowIgnore We know a provisional identity is expected
+        trustchain_id, target, value, public_signature_key, public_encryption_key, ...trail // eslint-disable-line camelcase
+      } = _deserializePublicIdentity(b64PublicIdentity);
+      const hashSalt = await generichash(utils.fromBase64(provisionalIdentity.private_signature_key));
+      const hashedPhone = utils.toBase64(await generichash(utils.concatArrays(hashSalt, utils.fromString(userPhone))));
+
+      expect(trustchain_id).to.equal(trustchain.id);
+      expect(target).to.equal('phone_number');
+      expect(value).to.be.equal(hashedPhone);
       expect(public_encryption_key).to.equal(provisionalIdentity.public_encryption_key);
       expect(public_signature_key).to.equal(provisionalIdentity.public_signature_key);
 
