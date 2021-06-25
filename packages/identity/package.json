@@ -13,10 +13,10 @@
   "homepage": "https://tanker.io/",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/TankerHQ/sdk-js.git"
+    "url": "git+https://github.com/TankerHQ/identity-js.git"
   },
   "bugs": {
-    "url": "https://github.com/TankerHQ/sdk-js/issues"
+    "url": "https://github.com/TankerHQ/identity-js/issues"
   },
   "dependencies": {
     "@babel/runtime-corejs3": "^7.9.0",
