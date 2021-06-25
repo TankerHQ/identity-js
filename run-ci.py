@@ -37,7 +37,7 @@ def version_to_npm_tag(version: str) -> str:
 
 
 def publish_npm_package(package_name: str, version: str) -> None:
-    package_path = Path("packages/identity/dist")
+    package_path = Path("packages/identity")
     npm_tag = version_to_npm_tag(version)
     subprocess.run(
         ["npm", "publish", "--access", "public", "--tag", npm_tag],
