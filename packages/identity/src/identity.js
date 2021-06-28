@@ -307,9 +307,17 @@ export async function getPublicIdentity(tankerIdentity: b64string): Promise<b64s
   throw new InvalidArgument(`Invalid secret identity provided: ${tankerIdentity}`);
 }
 
-export function upgradeIdentity(tankerIdentity: b64string): b64string {
+export async function upgradeIdentity(tankerIdentity: b64string): b64string {
   if (!tankerIdentity || typeof tankerIdentity !== 'string')
     throw new InvalidArgument('tankerIdentity', 'b64string', tankerIdentity);
-  const identity = _deserializeIdentity(tankerIdentity);
+  const frozenIdentity = _deserializeIdentity(tankerIdentity);
+  // $FlowIgnore flow doesn't understand that the spread doesn't change the type
+  const identity: SecretIdentity = { ...frozenIdentity };
+
+  if (identity.target === 'email' && !identity.private_encryption_key) {
+    identity.value = await _getPublicHashedValueFromSecretProvisional(identity);
+    identity.target = 'hashed_email';
+  }
+
   return _serializeIdentity(identity);
 }
