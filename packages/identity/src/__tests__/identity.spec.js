@@ -51,7 +51,7 @@ describe('Identity', () => {
     const goodPublicIdentity = 'eyJ0cnVzdGNoYWluX2lkIjoidHBveHlOemgwaFU5RzJpOWFnTXZIeXlkK3BPNnpHQ2pPOUJmaHJDTGpkND0iLCJ0YXJnZXQiOiJ1c2VyIiwidmFsdWUiOiJSRGEwZXE0WE51ajV0VjdoZGFwak94aG1oZVRoNFFCRE5weTRTdnk5WG9rPSJ9';
     const goodPublicProvisionalIdentity = 'eyJ0cnVzdGNoYWluX2lkIjoidHBveHlOemgwaFU5RzJpOWFnTXZIeXlkK3BPNnpHQ2pPOUJmaHJDTGpkND0iLCJ0YXJnZXQiOiJoYXNoZWRfZW1haWwiLCJ2YWx1ZSI6IjB1MmM4dzhFSVpXVDJGelJOL3l5TTVxSWJFR1lUTkRUNVNrV1ZCdTIwUW89IiwicHVibGljX2VuY3J5cHRpb25fa2V5IjoiLzJqNGRJM3I4UGx2Q04zdVc0SGhBNXdCdE1LT2NBQ2QzOEs2TjBxK21GVT0iLCJwdWJsaWNfc2lnbmF0dXJlX2tleSI6Ilc3UUVRQnU5RlhjWElwT2dxNjJ0UHdCaXlGQWJwVDFyQXJ1RDBoL05yVEE9In0=';
     const phoneNumberProvisionalIdentity = 'eyJ0cnVzdGNoYWluX2lkIjoidHBveHlOemgwaFU5RzJpOWFnTXZIeXlkK3BPNnpHQ2pPOUJmaHJDTGpkND0iLCJ0YXJnZXQiOiJwaG9uZV9udW1iZXIiLCJ2YWx1ZSI6IiszMzYxMTIyMzM0NCIsInB1YmxpY19lbmNyeXB0aW9uX2tleSI6Im42bTlYNUxmMFpuYXo4ZjArc2NoTElCTm0rcGlQaG5zWXZBdlh3MktFQXc9IiwicHJpdmF0ZV9lbmNyeXB0aW9uX2tleSI6InRWVFM5bkh4cjJNZFZ1VFI1Y2x3dzBFWGJ3aXM4SGl4Z1BJTmJRSngxVTQ9IiwicHVibGljX3NpZ25hdHVyZV9rZXkiOiJqcklEaWdTQ25BaTNHbDltSUFTbEFpU2hLQzdkQkxGVVpQOUN4TEdzYkg4PSIsInByaXZhdGVfc2lnbmF0dXJlX2tleSI6IlFIcWNMcjhicjZNM2JQblFtUWczcStxSENycDA1RGJjQnBMUGFUWlkwYTZPc2dPS0JJS2NDTGNhWDJZZ0JLVUNKS0VvTHQwRXNWUmsvMExFc2F4c2Z3PT0ifQ==';
-    const phoneNumberPublicProvisionalIdentity = 'eyJ0cnVzdGNoYWluX2lkIjoidHBveHlOemgwaFU5RzJpOWFnTXZIeXlkK3BPNnpHQ2pPOUJmaHJDTGpkND0iLCJ0YXJnZXQiOiJwaG9uZV9udW1iZXIiLCJ2YWx1ZSI6IkplYWlRQWg4eDdqY2lvVTJtNGloeStDc0hKbHlXKzRWVlNTczVTSEZVVHc9IiwicHVibGljX2VuY3J5cHRpb25fa2V5IjoibjZtOVg1TGYwWm5hejhmMCtzY2hMSUJObStwaVBobnNZdkF2WHcyS0VBdz0iLCJwdWJsaWNfc2lnbmF0dXJlX2tleSI6ImpySURpZ1NDbkFpM0dsOW1JQVNsQWlTaEtDN2RCTEZVWlA5Q3hMR3NiSDg9In0=';
+    const phoneNumberPublicProvisionalIdentity = 'eyJ0cnVzdGNoYWluX2lkIjoidHBveHlOemgwaFU5RzJpOWFnTXZIeXlkK3BPNnpHQ2pPOUJmaHJDTGpkND0iLCJ0YXJnZXQiOiJoYXNoZWRfcGhvbmVfbnVtYmVyIiwidmFsdWUiOiJKZWFpUUFoOHg3amNpb1UybTRpaHkrQ3NISmx5Vys0VlZTU3M1U0hGVVR3PSIsInB1YmxpY19lbmNyeXB0aW9uX2tleSI6Im42bTlYNUxmMFpuYXo4ZjArc2NoTElCTm0rcGlQaG5zWXZBdlh3MktFQXc9IiwicHVibGljX3NpZ25hdHVyZV9rZXkiOiJqcklEaWdTQ25BaTNHbDltSUFTbEFpU2hLQzdkQkxGVVpQOUN4TEdzYkg4PSJ9';
 
     it('can parse a valid permanent identity', () => {
       const identity = _deserializePermanentIdentity(goodPermanentIdentity);
@@ -135,7 +135,7 @@ describe('Identity', () => {
       const hashedPhone = utils.toBase64(await generichash(utils.concatArrays(hashSalt, utils.fromString(userPhone))));
 
       expect(identity.trustchain_id).to.be.equal(trustchain.id);
-      expect(identity.target).to.be.equal('phone_number');
+      expect(identity.target).to.be.equal('hashed_phone_number');
       expect(identity.value).to.equal(hashedPhone);
       expect(identity.public_signature_key).to.equal('jrIDigSCnAi3Gl9mIASlAiShKC7dBLFUZP9CxLGsbH8=');
       expect(identity.public_encryption_key).to.equal('n6m9X5Lf0Znaz8f0+schLIBNm+piPhnsYvAvXw2KEAw=');
@@ -287,7 +287,7 @@ describe('Identity', () => {
       const hashedPhone = utils.toBase64(await generichash(utils.concatArrays(hashSalt, utils.fromString(userPhone))));
 
       expect(trustchain_id).to.equal(trustchain.id);
-      expect(target).to.equal('phone_number');
+      expect(target).to.equal('hashed_phone_number');
       expect(value).to.be.equal(hashedPhone);
       expect(public_encryption_key).to.equal(provisionalIdentity.public_encryption_key);
       expect(public_signature_key).to.equal(provisionalIdentity.public_signature_key);

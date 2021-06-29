@@ -7,7 +7,7 @@ import { createUserSecretB64 } from './userSecret';
 
 type PermanentIdentityTarget = 'user';
 type SecretProvisionalIdentityTarget = 'email' | 'phone_number';
-type PublicProvisionalIdentityTarget = 'email' | 'hashed_email' | 'phone_number';
+type PublicProvisionalIdentityTarget = 'email' | 'hashed_email' | 'hashed_phone_number';
 
 export type PublicPermanentIdentity = {|
   trustchain_id: b64string,
@@ -305,11 +305,11 @@ export async function getPublicIdentity(tankerIdentity: b64string): Promise<b64s
 
   if (identity.public_signature_key && identity.public_encryption_key) {
     const { trustchain_id, public_signature_key, public_encryption_key } = identity; // eslint-disable-line camelcase
-    let { target } = identity;
+    // $FlowIgnore If "target" is a valid provisional target, then "hashed_target" is a valid public provisional target
+    const target: PublicProvisionalIdentityTarget = `hashed_${identity.target}`;
     const value = await _getPublicHashedValueFromSecretProvisional(identity);
-    if (target === 'email') // For compatibility reasons, for hashed_email pub prov ids, the private is just 'email'
-      target = 'hashed_email';
-    return _serializeIdentity({ trustchain_id, target, value, public_signature_key, public_encryption_key });
+    const publicIdentity: PublicIdentity = { trustchain_id, target, value, public_signature_key, public_encryption_key };
+    return _serializeIdentity(publicIdentity);
   }
 
   throw new InvalidArgument(`Invalid secret identity provided: ${tankerIdentity}`);
