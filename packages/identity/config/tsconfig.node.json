@@ -1,8 +1,11 @@
 {
   "extends": "../../../config/tsconfig.base.json",
   "compilerOptions": {
-    "module": "commonjs",
     "outDir": "../dist/node",
+    // Recommended values for Node 10: https://github.com/tsconfig/bases/blob/main/bases/node10.json
+    "lib": ["es2018"],
+    "module": "commonjs",
+    "target": "es2018",
   },
   "include": [
     "../src/**/*"
