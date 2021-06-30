@@ -222,11 +222,11 @@ describe('Identity', () => {
 
   describe('create provisional', () => {
     let b64Identity;
-    let b64SmsIdentity;
+    let b64PhoneNumberIdentity;
 
     before(async () => {
       b64Identity = await createProvisionalIdentity(trustchain.id, 'email', userEmail);
-      b64SmsIdentity = await createProvisionalIdentity(trustchain.id, 'phone_number', userPhone);
+      b64PhoneNumberIdentity = await createProvisionalIdentity(trustchain.id, 'phone_number', userPhone);
     });
 
     it('cannot create a provisional with an invalid target', async () => {
@@ -264,8 +264,8 @@ describe('Identity', () => {
       expect(trail).to.be.empty;
     });
 
-    it('returns a tanker sms provisional identity', async () => {
-      const { trustchain_id, value, target, public_signature_key, public_encryption_key, private_signature_key, private_encryption_key } = _deserializeProvisionalIdentity(b64SmsIdentity); // eslint-disable-line camelcase
+    it('returns a tanker phone_number provisional identity', async () => {
+      const { trustchain_id, value, target, public_signature_key, public_encryption_key, private_signature_key, private_encryption_key } = _deserializeProvisionalIdentity(b64PhoneNumberIdentity); // eslint-disable-line camelcase
       expect(trustchain_id).to.equal(trustchain.id);
       expect(target).to.be.equal('phone_number');
       expect(value).to.be.equal(userPhone);
@@ -275,10 +275,10 @@ describe('Identity', () => {
       expect(private_signature_key).to.be.a('string').that.is.not.empty;
     });
 
-    it('returns a tanker public identity from a tanker sms provisional identity', async () => {
-      const b64PublicIdentity = await getPublicIdentity(b64SmsIdentity);
+    it('returns a tanker public identity from a tanker phone_number provisional identity', async () => {
+      const b64PublicIdentity = await getPublicIdentity(b64PhoneNumberIdentity);
 
-      const provisionalIdentity = _deserializeProvisionalIdentity(b64SmsIdentity);
+      const provisionalIdentity = _deserializeProvisionalIdentity(b64PhoneNumberIdentity);
       const {
         // $FlowIgnore We know a provisional identity is expected
         trustchain_id, target, value, public_signature_key, public_encryption_key, ...trail // eslint-disable-line camelcase
