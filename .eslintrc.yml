@@ -9,7 +9,9 @@ extends:
 parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaVersion: 2018
-  project: ./tsconfig.json
+  project:
+    - ./config/tsconfig.tests.json
+    - ./packages/**/tsconfig.es.json
 
 plugins:
   - "@typescript-eslint"

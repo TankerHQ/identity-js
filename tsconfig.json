@@ -7,6 +7,9 @@
     }
   },
   "include": [
-    "./packages"
+    "./**/__tests__/*"
+  ],
+  "references": [
+    { "path": "./packages/identity/config/tsconfig.browser.json" }
   ]
 }
