@@ -4,12 +4,11 @@
     "files": true,
     "compilerOptions": {
       "module": "commonjs",
-    }
+    },
   },
-  "include": [
-    "./**/__tests__/*"
-  ],
   "references": [
-    { "path": "./packages/identity/config/tsconfig.browser.json" }
-  ]
+    { "path": "./config/tsconfig.tests.json" },
+    { "path": "./packages/identity/config/" },
+  ],
+  "files": []
 }

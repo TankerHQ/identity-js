@@ -1,6 +1,10 @@
 { // used by lint, tests and coverage
   "extends": "./tsconfig.base.json",
   "include": [
-    "../**/__tests__/*"
+    "../**/__tests__/*",
+    "../packages/test-utils/*"
+  ],
+  "references": [
+    { "path": "../packages/identity/config/tsconfig.browser.json" },
   ],
 }
