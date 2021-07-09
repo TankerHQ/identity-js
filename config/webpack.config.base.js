@@ -25,6 +25,9 @@ const getTsLoaders = (env) => {
       loader: 'ts-loader',
       options: {
         configFile: path.resolve(__dirname, 'tsconfig.tests.json'),
+        compilerOptions: {
+          declaration: false,
+        }
       },
       exclude: /node_modules|\.d\.ts$/,
     },
