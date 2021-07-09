@@ -9,7 +9,7 @@ extends:
 parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaVersion: 2018
-  project:
+  project: # "@typescript-eslint/parser" does not understand project referencies
     - ./config/tsconfig.tests.json
     - ./packages/**/tsconfig.browser.json
 
