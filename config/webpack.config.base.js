@@ -1,8 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 
-const getBabelConfig = require('./babel.config');
-
 const webFallback = {
   // libsodium does not use fs nor path in browsers.
   // These packages are referenced in node environment only
@@ -16,9 +14,6 @@ const webFallback = {
 };
 
 const getTsLoaders = (env) => {
-  const babelConfig = getBabelConfig(env);
-  const babelConfigForceUMD = getBabelConfig({ ...env, modules: 'umd' });
-
   return [
     {
       test: /\.tsx?$/,
@@ -33,10 +28,16 @@ const getTsLoaders = (env) => {
     },
     {
       test: /\.js$/,
-      loader: 'babel-loader',
-      options: babelConfig,
+      loader: 'ts-loader',
+      options: {
+        configFile: path.resolve(__dirname, 'tsconfig.base.json'),
+        compilerOptions: {
+          allowJs: true,
+          declaration: false,
+        },
+      },
       include: [
-        // babelify all es libs when included (except core-js-pure ponyfills)
+        // compile all es libs when included (except core-js-pure ponyfills)
         /node_modules(\\|\/)((?!core-js-pure).).*(\\|\/)es(\\|\/)/,
         // ws lib is es6 (it assumes the users will run it in nodejs directly)
         /node_modules(\\|\/)ws/,
@@ -44,13 +45,6 @@ const getTsLoaders = (env) => {
         /node_modules(\\|\/)supports-color/,
         // they use arrow functions and probably more
         /node_modules(\\|\/)query-string/,
-      ],
-    },
-    {
-      test: /\.js$/,
-      loader: 'babel-loader',
-      options: babelConfigForceUMD,
-      include: [
         // they use arrow functions
         /node_modules(\\|\/)chai-as-promised/,
         // they use arrow functions
