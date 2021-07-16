@@ -71,6 +71,6 @@
       "packages/**/tests",
       "**/*.d.ts"
     ],
-    "sourceMap": false
+    "sourceMap": true
   }
 }
