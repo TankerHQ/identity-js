@@ -12,7 +12,7 @@
     "dist/",
     "README.md",
     "package.json",
-    "LISCENSE"
+    "LICENSE"
   ],
   "scripts": {
     "test": "cd ../..; yarn test:identity"
