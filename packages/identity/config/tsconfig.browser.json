@@ -2,9 +2,11 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "../dist/browser",
-    // Recommended values for browsers: https://github.com/tsconfig/bases/blob/main/bases/recommended.json
-    "target": "ES2015",
+    // Necessary target for IE11
+    "target": "ES5",
     "module": "commonjs",
+    "importHelpers": true,
+    "downlevelIteration": true,
   },
   "include": [
     "../src/**/*",

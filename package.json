@@ -72,5 +72,8 @@
       "**/*.d.ts"
     ],
     "sourceMap": true
+  },
+  "resolutions": {
+    "tslib": "^2.3.0"
   }
 }
