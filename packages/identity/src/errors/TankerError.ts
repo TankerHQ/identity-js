@@ -1,4 +1,6 @@
-export class TankerError extends Error {
+import { BaseError } from 'make-error';
+
+export class TankerError extends BaseError {
   constructor(name: string = 'TankerError', message?: string) {
     super();
     this.name = name;
