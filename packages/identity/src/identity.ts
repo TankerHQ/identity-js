@@ -103,9 +103,8 @@ export function _serializeIdentity(identity: SecretIdentity | PublicIdentity): b
   return toIdentityOrderedJson(identity);
 }
 
-function _deserializeAndFreeze(identity: b64string): SecretIdentity | PublicIdentity { // eslint-disable-line no-underscore-dangle
-  const result = utils.fromB64Json(identity); //as SecretIdentity | PublicIdentity;
-
+function _deserializeAndFreeze(identity: b64string): Object { // eslint-disable-line no-underscore-dangle
+  const result = utils.fromB64Json(identity);
   // Hidden property that carries the original serialized version of the
   // identity for debugging purposes (e.g. error messages)
   Object.defineProperty(result, 'serializedIdentity', {
@@ -119,7 +118,7 @@ function _deserializeAndFreeze(identity: b64string): SecretIdentity | PublicIden
 
 export function _deserializeIdentity(identity: b64string): SecretIdentity { // eslint-disable-line no-underscore-dangle
   try {
-    return _deserializeAndFreeze(identity); // as SecretIdentity;
+    return _deserializeAndFreeze(identity) as SecretIdentity;
   } catch (e) {
     throw new InvalidArgument(`Invalid identity provided: ${identity}`);
   }
@@ -128,7 +127,7 @@ export function _deserializePermanentIdentity(identity: b64string): SecretPerman
   let result: SecretPermanentIdentity;
 
   try {
-    result = _deserializeAndFreeze(identity); //as SecretPermanentIdentity;
+    result = _deserializeAndFreeze(identity) as SecretPermanentIdentity;
   } catch (e) {
     throw new InvalidArgument(`Invalid secret permanent identity provided: ${identity}`);
   }
@@ -147,7 +146,7 @@ export function _deserializeProvisionalIdentity(identity: b64string): SecretProv
   let result: SecretProvisionalIdentity;
 
   try {
-    result = _deserializeAndFreeze(identity); // as SecretProvisionalIdentity;
+    result = _deserializeAndFreeze(identity) as SecretProvisionalIdentity;
   } catch (e) {
     throw new InvalidArgument(`Invalid provisional identity provided: ${identity}`);
   }
@@ -160,7 +159,7 @@ export function _deserializeProvisionalIdentity(identity: b64string): SecretProv
 }
 export function _deserializePublicIdentity(identity: b64string): PublicIdentity { // eslint-disable-line no-underscore-dangle
   try {
-    return _deserializeAndFreeze(identity);
+    return _deserializeAndFreeze(identity) as PublicIdentity;
   } catch (e) {
     throw new InvalidArgument(`Invalid public identity provided: ${identity}`);
   }
@@ -177,14 +176,14 @@ export function _splitProvisionalAndPermanentPublicIdentities(identities: Array<
         throw new InvalidArgument('unexpected secret identity, only public identities are allowed');
       }
 
-      permanentIdentities.push(identity); // as PublicPermanentIdentity);
+      permanentIdentities.push(identity as PublicPermanentIdentity);
     } else {
       // Check that the provisional identities are not secret provisional identities
       if ('private_encryption_key' in identity) {
         throw new InvalidArgument('unexpected secret identity, only public identities are allowed');
       }
 
-      provisionalIdentities.push(identity); // as PublicProvisionalIdentity);
+      provisionalIdentities.push(identity as PublicProvisionalIdentity);
     }
   }
 
@@ -246,8 +245,8 @@ export async function createProvisionalIdentity(appId: b64string, target: Secret
 }
 
 async function _getPublicHashedValueFromSecretProvisional(identity: SecretProvisionalIdentity): Promise<b64string> { // eslint-disable-line no-underscore-dangle
-
-  /* eslint-disable no-else-return */ // eslint is too clever by half. Write your code for humans to read, not machines, and let us free ourselves from the tyranny of bad linters, my friends!
+  /* eslint-disable no-else-return */
+  // eslint is too clever by half. Write your code for humans to read, not machines, and let us free ourselves from the tyranny of bad linters, my friends!
   if (identity.target === 'email') {
     return utils.toBase64(await generichash(utils.fromString(identity.value)));
   } else if (identity.target === 'phone_number') {
@@ -276,16 +275,16 @@ export async function getPublicIdentity(tankerIdentity: b64string): Promise<b64s
       trustchain_id,
       target,
       value,
-    }); // as PublicIdentity);
+    } as PublicPermanentIdentity);
   }
 
-  // This if is mostly to help Flow understand the fields exist (because we checked !isPermanentIdentity)
-  if (identity.public_signature_key && identity.public_encryption_key) {
+  const provIdentity = identity as PublicProvisionalIdentity;
+  if (provIdentity.public_signature_key && provIdentity.public_encryption_key) {
     const {
       trustchain_id,
       public_signature_key,
       public_encryption_key,
-    } = identity; // eslint-disable-line camelcase
+    } = identity;
 
     // $FlowIgnore If "target" is a valid provisional target, then "hashed_target" is a valid public provisional target
     const target: PublicProvisionalIdentityTarget = `hashed_${identity.target}`;
@@ -302,13 +301,14 @@ export async function getPublicIdentity(tankerIdentity: b64string): Promise<b64s
 
   throw new InvalidArgument(`Invalid secret identity provided: ${tankerIdentity}`);
 }
-export async function upgradeIdentity(tankerIdentity: b64string): b64string {
+
+export async function upgradeIdentity(tankerIdentity: b64string): Promise<b64string> {
   if (!tankerIdentity || typeof tankerIdentity !== 'string') throw new InvalidArgument('tankerIdentity', 'b64string', tankerIdentity);
 
   const frozenIdentity = _deserializeIdentity(tankerIdentity);
 
-  // $FlowIgnore flow doesn't understand that the spread doesn't change the type
-  const identity: SecretIdentity = { ...frozenIdentity,
+  const identity = {
+    ...frozenIdentity,
   };
 
   if (identity.target === 'email' && !identity.private_encryption_key) {
