@@ -20,15 +20,6 @@ def version_from_git_tag(git_tag: str) -> str:
     return version
 
 
-def get_package_path(package_name: str) -> Path:
-    m = re.match(r"^@tanker/(.*)$", package_name)
-    p = Path("packages")
-    assert m
-    if m[1]:
-        p = p.joinpath(m[1])
-    return p.joinpath("dist")
-
-
 def version_to_npm_tag(version: str) -> str:
     for tag in ["alpha", "beta"]:
         if tag in version:

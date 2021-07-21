@@ -42,8 +42,6 @@ const getTsLoaders = (env) => {
         },
       },
       include: [
-        // compile all es libs when included (except core-js-pure ponyfills)
-        /node_modules(\\|\/)((?!core-js-pure).).*(\\|\/)es(\\|\/)/,
         // ws lib is es6 (it assumes the users will run it in nodejs directly)
         /node_modules(\\|\/)ws/,
         // supports-color is es6
@@ -54,8 +52,6 @@ const getTsLoaders = (env) => {
         /node_modules(\\|\/)chai-as-promised/,
         // they use arrow functions
         /node_modules(\\|\/)chai-exclude/,
-        // they use object destructuring
-        /node_modules(\\|\/)parse5/,
       ],
     },
   ];
@@ -65,7 +61,6 @@ const makeBaseConfig = ({ mode, target, devtool, plugins }) => {
   const base = {
     target,
     mode,
-    devtool: devtool || (mode === 'development' ? 'inline-source-map' : 'source-map'),
 
     context: path.resolve(__dirname, '..'),
 
@@ -77,15 +72,6 @@ const makeBaseConfig = ({ mode, target, devtool, plugins }) => {
     module: {
       rules: [
         ...getTsLoaders({ target }),
-        {
-          test: /\.(eot|ttf|woff|woff2|svg|png|jpg)$/,
-          type: 'asset',
-          parser: {
-            dataUrlCondition: {
-              maxSize: 25000,
-            },
-          },
-        },
       ],
     },
 
