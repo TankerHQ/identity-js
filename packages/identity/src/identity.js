@@ -303,6 +303,7 @@ export async function getPublicIdentity(tankerIdentity: b64string): Promise<b64s
     return _serializeIdentity({ trustchain_id, target, value });
   }
 
+  // This if is mostly to help Flow understand the fields exist (because we checked !isPermanentIdentity)
   if (identity.public_signature_key && identity.public_encryption_key) {
     const { trustchain_id, public_signature_key, public_encryption_key } = identity; // eslint-disable-line camelcase
     // $FlowIgnore If "target" is a valid provisional target, then "hashed_target" is a valid public provisional target
