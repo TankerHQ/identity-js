@@ -1,12 +1,13 @@
 // @flow
-import { ready as cryptoReady, tcrypto, utils, type b64string } from '@tanker/crypto';
+import { ready as cryptoReady, tcrypto, utils, type b64string, generichash } from '@tanker/crypto';
 
 import { InvalidArgument } from './errors';
 import { obfuscateUserId } from './userId';
 import { createUserSecretB64 } from './userSecret';
 
 type PermanentIdentityTarget = 'user';
-type ProvisionalIdentityTarget = 'email';
+type SecretProvisionalIdentityTarget = 'email' | 'phone_number';
+type PublicProvisionalIdentityTarget = 'email' | 'hashed_email' | 'hashed_phone_number';
 
 export type PublicPermanentIdentity = {|
   trustchain_id: b64string,
@@ -24,7 +25,7 @@ export type SecretPermanentIdentity = {|
 
 export type PublicProvisionalIdentity = {|
   trustchain_id: b64string,
-  target: ProvisionalIdentityTarget,
+  target: PublicProvisionalIdentityTarget,
   value: string,
   public_signature_key: b64string,
   public_encryption_key: b64string,
@@ -32,6 +33,7 @@ export type PublicProvisionalIdentity = {|
 
 export type SecretProvisionalIdentity = {|
   ...PublicProvisionalIdentity,
+  target: SecretProvisionalIdentityTarget,
   private_encryption_key: b64string,
   private_signature_key: b64string,
 |};
@@ -65,11 +67,53 @@ function isPublicPermanentIdentity(identity: SecretPermanentIdentity | PublicPer
 }
 
 function isProvisionalIdentity(identity: SecretIdentity | PublicIdentity): bool %checks {
-  return identity.target === 'email';
+  return !isPermanentIdentity(identity);
+}
+
+const rubyJsonOrder = {
+  trustchain_id: 1,
+  target: 2,
+  value: 3,
+  delegation_signature: 4,
+  ephemeral_public_signature_key: 5,
+  ephemeral_private_signature_key: 6,
+  user_secret: 7,
+  public_encryption_key: 8,
+  private_encryption_key: 9,
+  public_signature_key: 10,
+  private_signature_key: 11,
+};
+
+function rubyJsonSort(a: string, b: string) {
+  const aIdx = rubyJsonOrder[a];
+  const bIdx = rubyJsonOrder[b];
+  if (!aIdx)
+    throw new InvalidArgument(`Assertion error: unknown identity JSON key: ${a}`);
+  if (!bIdx)
+    throw new InvalidArgument(`Assertion error: unknown identity JSON key: ${b}`);
+  return aIdx - bIdx;
+}
+
+function dumpOrderedJson(o: Object): string {
+  const keys = Object.keys(o).sort(rubyJsonSort);
+  const json = [];
+  for (const k of keys) {
+    let val;
+    if (o[k] !== null && typeof o[k] === 'object')
+      val = dumpOrderedJson(o[k]);
+    else
+      val = JSON.stringify(o[k]);
+    json.push(`"${k}":${val}`);
+  }
+  return `{${json.join(',')}}`;
+}
+
+export function toIdentityOrderedJson(identity: SecretIdentity | PublicIdentity): b64string {
+  return utils.toBase64(utils.fromString(dumpOrderedJson(identity)));
 }
 
 export function _serializeIdentity(identity: SecretIdentity | PublicIdentity): b64string { // eslint-disable-line no-underscore-dangle
-  return utils.toB64Json(identity);
+  return toIdentityOrderedJson(identity);
 }
 
 function _deserializeAndFreeze(identity: b64string): Object { // eslint-disable-line no-underscore-dangle
@@ -203,11 +247,16 @@ export async function createIdentity(appId: b64string, appSecret: b64string, use
   return _serializeIdentity(permanentIdentity);
 }
 
-export async function createProvisionalIdentity(appId: b64string, email: string): Promise<b64string> {
+export async function createProvisionalIdentity(appId: b64string, target: SecretProvisionalIdentityTarget, value: string): Promise<b64string> {
   if (!appId || typeof appId !== 'string')
     throw new InvalidArgument('appId', 'b64string', appId);
-  if (!email || typeof email !== 'string')
-    throw new InvalidArgument('email', 'string', email);
+  if (!target || typeof target !== 'string')
+    throw new InvalidArgument('target', 'string', target);
+  if (!value || typeof value !== 'string')
+    throw new InvalidArgument('value', 'string', value);
+
+  if (!['email', 'phone_number'].includes(target))
+    throw new InvalidArgument('Unsupported target for provisional identity');
 
   await cryptoReady;
 
@@ -216,8 +265,8 @@ export async function createProvisionalIdentity(appId: b64string, email: string)
 
   const provisionalIdentity: SecretProvisionalIdentity = {
     trustchain_id: appId,
-    target: 'email',
-    value: email,
+    target,
+    value,
     public_encryption_key: utils.toBase64(encryptionKeys.publicKey),
     private_encryption_key: utils.toBase64(encryptionKeys.privateKey),
     public_signature_key: utils.toBase64(signatureKeys.publicKey),
@@ -225,6 +274,19 @@ export async function createProvisionalIdentity(appId: b64string, email: string)
   };
 
   return _serializeIdentity(provisionalIdentity);
+}
+
+async function _getPublicHashedValueFromSecretProvisional(identity: SecretProvisionalIdentity): Promise<b64string> { // eslint-disable-line no-underscore-dangle
+  /* eslint-disable no-else-return */ // eslint is too clever by half. Write your code for humans to read, not machines, and let us free ourselves from the tyranny of bad linters, my friends!
+  if (identity.target === 'email') {
+    return utils.toBase64(await generichash(utils.fromString(identity.value)));
+  } else if (identity.target === 'phone_number') {
+    const hashSalt = await generichash(utils.fromBase64(identity.private_signature_key));
+    return utils.toBase64(await generichash(utils.concatArrays(hashSalt, utils.fromString(identity.value))));
+  } else {
+    throw new InvalidArgument(`Unsupported identity target to hash: ${identity.target}`);
+  }
+  /* eslint-enable no-else-return */
 }
 
 // Note: tankerIdentity is a Tanker identity created by either createIdentity() or createProvisionalIdentity()
@@ -241,10 +303,30 @@ export async function getPublicIdentity(tankerIdentity: b64string): Promise<b64s
     return _serializeIdentity({ trustchain_id, target, value });
   }
 
+  // This if is mostly to help Flow understand the fields exist (because we checked !isPermanentIdentity)
   if (identity.public_signature_key && identity.public_encryption_key) {
-    const { trustchain_id, target, value, public_signature_key, public_encryption_key } = identity; // eslint-disable-line camelcase
-    return _serializeIdentity({ trustchain_id, target, value, public_signature_key, public_encryption_key });
+    const { trustchain_id, public_signature_key, public_encryption_key } = identity; // eslint-disable-line camelcase
+    // $FlowIgnore If "target" is a valid provisional target, then "hashed_target" is a valid public provisional target
+    const target: PublicProvisionalIdentityTarget = `hashed_${identity.target}`;
+    const value = await _getPublicHashedValueFromSecretProvisional(identity);
+    const publicIdentity: PublicIdentity = { trustchain_id, target, value, public_signature_key, public_encryption_key };
+    return _serializeIdentity(publicIdentity);
   }
 
   throw new InvalidArgument(`Invalid secret identity provided: ${tankerIdentity}`);
+}
+
+export async function upgradeIdentity(tankerIdentity: b64string): b64string {
+  if (!tankerIdentity || typeof tankerIdentity !== 'string')
+    throw new InvalidArgument('tankerIdentity', 'b64string', tankerIdentity);
+  const frozenIdentity = _deserializeIdentity(tankerIdentity);
+  // $FlowIgnore flow doesn't understand that the spread doesn't change the type
+  const identity: SecretIdentity = { ...frozenIdentity };
+
+  if (identity.target === 'email' && !identity.private_encryption_key) {
+    identity.value = await _getPublicHashedValueFromSecretProvisional(identity);
+    identity.target = 'hashed_email';
+  }
+
+  return _serializeIdentity(identity);
 }

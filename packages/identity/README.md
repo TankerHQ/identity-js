@@ -29,7 +29,7 @@ The ID of a user in your application.
 <br /><br />
 
 ```javascript
-createProvisionalIdentity(appId, email);
+createProvisionalIdentity(appId, 'email', email);
 ```
 
 Create a Tanker provisional identity. It allows you to share a resource with a user who does not have an account in your application yet.
