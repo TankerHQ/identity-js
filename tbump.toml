@@ -22,5 +22,5 @@ src = "packages/**/package.json"
 search = '"version": "{current_version}"'
 
 [[file]]
-src = "packages/identity/src/version.js"
+src = "packages/identity/src/version.ts"
 search = "TANKER_IDENTITY_SDK_VERSION = '{current_version}'"
