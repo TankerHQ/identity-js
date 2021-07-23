@@ -1,6 +1,10 @@
+import type { b64string } from '@tanker/crypto';
 import { generichash, ready as cryptoReady, tcrypto, utils } from '@tanker/crypto';
 import { expect } from '@tanker/test-utils';
 import { InvalidArgument } from '../errors';
+import type {
+  SecretPermanentIdentity, SecretProvisionalIdentity, PublicIdentity, PublicProvisionalIdentity,
+} from '../identity';
 import { _deserializeIdentity, _deserializePermanentIdentity, _deserializeProvisionalIdentity, _deserializePublicIdentity, _splitProvisionalAndPermanentPublicIdentities, _serializeIdentity, createIdentity, createProvisionalIdentity, getPublicIdentity, upgradeIdentity } from '../identity';
 import { obfuscateUserId } from '../userId';
 import { assertUserSecret } from '../userSecret';
@@ -19,8 +23,8 @@ describe('Identity', () => {
   const userId = 'b_eich';
   const userEmail = 'brendan.eich@tanker.io';
   const userPhone = '+33611223344';
-  let hashedUserEmail;
-  let obfuscatedUserId;
+  let hashedUserEmail: string;
+  let obfuscatedUserId: string;
   before(async () => {
     await cryptoReady;
     obfuscatedUserId = utils.toBase64(obfuscateUserId(utils.fromBase64(trustchain.id), userId));
@@ -93,7 +97,7 @@ describe('Identity', () => {
       expect(identity.private_signature_key).to.equal('QHqcLr8br6M3bPnQmQg3q+qHCrp05DbcBpLPaTZY0a6OsgOKBIKcCLcaX2YgBKUCJKEoLt0EsVRk/0LEsaxsfw==');
       expect(identity.public_encryption_key).to.equal('n6m9X5Lf0Znaz8f0+schLIBNm+piPhnsYvAvXw2KEAw=');
       expect(identity.private_encryption_key).to.equal('tVTS9nHxr2MdVuTR5clww0EXbwis8HixgPINbQJx1U4=');
-      // $FlowIgnore hidden property
+      // @ts-expect-error hidden property
       expect(identity.serializedIdentity).to.equal(phoneNumberProvisionalIdentity);
       expect(_serializeIdentity(identity)).to.equal(phoneNumberProvisionalIdentity);
     });
@@ -109,7 +113,7 @@ describe('Identity', () => {
       expect(identity.value).to.equal(hashedPhone);
       expect(identity.public_signature_key).to.equal('jrIDigSCnAi3Gl9mIASlAiShKC7dBLFUZP9CxLGsbH8=');
       expect(identity.public_encryption_key).to.equal('n6m9X5Lf0Znaz8f0+schLIBNm+piPhnsYvAvXw2KEAw=');
-      // $FlowIgnore hidden property
+      // @ts-expect-error hidden property
       expect(identity.serializedIdentity).to.equal(phoneNumberPublicProvisionalIdentity);
       expect(_serializeIdentity(identity)).to.equal(phoneNumberPublicProvisionalIdentity);
       expect(await getPublicIdentity(phoneNumberProvisionalIdentity)).to.equal(phoneNumberPublicProvisionalIdentity);
@@ -153,7 +157,6 @@ describe('Identity', () => {
         ...trail
       } = _deserializePublicIdentity(b64PublicIdentity);
 
-      // eslint-disable-line camelcase
       expect(trustchain_id).to.equal(trustchain.id);
       expect(target).to.equal('user');
       expect(value).to.equal(obfuscatedUserId);
@@ -185,14 +188,14 @@ describe('Identity', () => {
     });
   });
   describe('create provisional', () => {
-    let b64Identity;
-    let b64PhoneNumberIdentity;
+    let b64Identity: string;
+    let b64PhoneNumberIdentity: string;
     before(async () => {
       b64Identity = await createProvisionalIdentity(trustchain.id, 'email', userEmail);
       b64PhoneNumberIdentity = await createProvisionalIdentity(trustchain.id, 'phone_number', userPhone);
     });
     it('cannot create a provisional with an invalid target', async () => {
-      // $FlowIgnore Checking that invalid arguments result in errors may require passing invalid arguments. Don't try this at home.
+      // @ts-expect-error Checking that invalid arguments result in errors may require passing invalid arguments. Don't try this at home.
       await expect(createProvisionalIdentity(trustchain.id, 'invalid', 'whatever')).to.be.rejectedWith(InvalidArgument);
     });
     it('returns a tanker provisional identity', async () => {
@@ -206,7 +209,6 @@ describe('Identity', () => {
         private_encryption_key,
       } = _deserializeProvisionalIdentity(b64Identity);
 
-      // eslint-disable-line camelcase
       expect(trustchain_id).to.equal(trustchain.id);
       expect(target).to.be.equal('email');
       expect(value).to.be.equal(userEmail);
@@ -221,15 +223,13 @@ describe('Identity', () => {
       const provisionalIdentity = _deserializeProvisionalIdentity(b64Identity);
 
       const {
-        // $FlowIgnore We know a provisional identity is expected
         trustchain_id,
         target,
         value,
         public_signature_key,
         public_encryption_key,
-        ...trail // eslint-disable-line camelcase
-
-      } = _deserializePublicIdentity(b64PublicIdentity);
+        ...trail
+      } = _deserializePublicIdentity(b64PublicIdentity) as PublicProvisionalIdentity;
 
       const hashedEmail = utils.toBase64(generichash(utils.fromString(userEmail)));
       expect(trustchain_id).to.equal(trustchain.id);
@@ -264,15 +264,13 @@ describe('Identity', () => {
       const provisionalIdentity = _deserializeProvisionalIdentity(b64PhoneNumberIdentity);
 
       const {
-        // $FlowIgnore We know a provisional identity is expected
         trustchain_id,
         target,
         value,
         public_signature_key,
         public_encryption_key,
-        ...trail // eslint-disable-line camelcase
-
-      } = _deserializePublicIdentity(b64PublicIdentity);
+        ...trail
+      } = _deserializePublicIdentity(b64PublicIdentity) as PublicProvisionalIdentity;
 
       const hashSalt = await generichash(utils.fromBase64(provisionalIdentity.private_signature_key));
       const hashedPhone = utils.toBase64(await generichash(utils.concatArrays(hashSalt, utils.fromString(userPhone))));
@@ -284,15 +282,15 @@ describe('Identity', () => {
       expect(trail).to.be.empty;
     });
     it('throws with invalid app ID', async () => {
-      // $FlowExpectedError
+      // @ts-expect-error
       await expect(createProvisionalIdentity(undefined, 'email', userEmail)).to.be.rejectedWith(InvalidArgument);
-      // $FlowExpectedError
+      // @ts-expect-error
       await expect(createProvisionalIdentity([], 'email', userEmail)).to.be.rejectedWith(InvalidArgument);
     });
     it('throws with invalid email', async () => {
-      // $FlowExpectedError
+      // @ts-expect-error
       await expect(createProvisionalIdentity(trustchain.id, 'email', undefined)).to.be.rejectedWith(InvalidArgument);
-      // $FlowExpectedError
+      // @ts-expect-error
       await expect(createProvisionalIdentity(trustchain.id, 'email', [])).to.be.rejectedWith(InvalidArgument);
     });
     it('throws with mismatching app ID and app secret', async () => {
@@ -300,15 +298,16 @@ describe('Identity', () => {
       await expect(createIdentity(mismatchingAppId, trustchain.sk, userId)).to.be.rejectedWith(InvalidArgument);
     });
   });
+
   describe('_splitProvisionalAndPermanentPublicIdentities', () => {
-    let b64Identity;
-    let identity;
-    let b64PublicIdentity;
-    let publicIdentity;
-    let b64ProvisionalIdentity;
-    let provisionalIdentity;
-    let b64PublicProvisionalIdentity;
-    let publicProvisionalIdentity;
+    let b64Identity: b64string;
+    let identity: SecretPermanentIdentity;
+    let b64PublicIdentity: b64string;
+    let publicIdentity: PublicIdentity;
+    let b64ProvisionalIdentity: b64string;
+    let provisionalIdentity: SecretProvisionalIdentity;
+    let b64PublicProvisionalIdentity: b64string;
+    let publicProvisionalIdentity: PublicProvisionalIdentity;
     before(async () => {
       b64Identity = await createIdentity(trustchain.id, trustchain.sk, userId);
       identity = _deserializePermanentIdentity(b64Identity);
@@ -317,7 +316,7 @@ describe('Identity', () => {
       b64ProvisionalIdentity = await createProvisionalIdentity(trustchain.id, 'email', userEmail);
       provisionalIdentity = _deserializeProvisionalIdentity(b64ProvisionalIdentity);
       b64PublicProvisionalIdentity = await getPublicIdentity(b64ProvisionalIdentity);
-      publicProvisionalIdentity = _deserializePublicIdentity(b64PublicProvisionalIdentity);
+      publicProvisionalIdentity = _deserializePublicIdentity(b64PublicProvisionalIdentity) as PublicProvisionalIdentity;
     });
     it('splits identities as expected', async () => {
       const {

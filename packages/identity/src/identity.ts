@@ -18,14 +18,18 @@ export type SecretPermanentIdentity = PublicPermanentIdentity & {
   delegation_signature: b64string;
   user_secret: b64string;
 };
-export type PublicProvisionalIdentity = {
+
+type ProvisionalIdentityBase = {
   trustchain_id: b64string;
-  target: PublicProvisionalIdentityTarget;
   value: string;
   public_signature_key: b64string;
   public_encryption_key: b64string;
 };
-export type SecretProvisionalIdentity = PublicProvisionalIdentity & {
+
+export type PublicProvisionalIdentity = ProvisionalIdentityBase & {
+  target: PublicProvisionalIdentityTarget;
+};
+export type SecretProvisionalIdentity = ProvisionalIdentityBase & {
   target: SecretProvisionalIdentityTarget;
   private_encryption_key: b64string;
   private_signature_key: b64string;
@@ -278,17 +282,16 @@ export async function getPublicIdentity(tankerIdentity: b64string): Promise<b64s
     } as PublicPermanentIdentity);
   }
 
-  const provIdentity = identity as PublicProvisionalIdentity;
+  const provIdentity = identity as SecretProvisionalIdentity;
   if (provIdentity.public_signature_key && provIdentity.public_encryption_key) {
     const {
       trustchain_id,
       public_signature_key,
       public_encryption_key,
-    } = identity;
+    } = provIdentity;
 
-    // $FlowIgnore If "target" is a valid provisional target, then "hashed_target" is a valid public provisional target
-    const target: PublicProvisionalIdentityTarget = `hashed_${identity.target}`;
-    const value = await _getPublicHashedValueFromSecretProvisional(identity);
+    const target: PublicProvisionalIdentityTarget = `hashed_${provIdentity.target}`;
+    const value = await _getPublicHashedValueFromSecretProvisional(provIdentity);
     const publicIdentity: PublicIdentity = {
       trustchain_id,
       target,
@@ -311,10 +314,11 @@ export async function upgradeIdentity(tankerIdentity: b64string): Promise<b64str
     ...frozenIdentity,
   };
 
+  const pubIdentity = identity as PublicIdentity;
   if (identity.target === 'email' && !identity.private_encryption_key) {
-    identity.value = await _getPublicHashedValueFromSecretProvisional(identity);
-    identity.target = 'hashed_email';
+    pubIdentity.value = await _getPublicHashedValueFromSecretProvisional(identity);
+    pubIdentity.target = 'hashed_email';
   }
 
-  return _serializeIdentity(identity);
+  return _serializeIdentity(pubIdentity);
 }
