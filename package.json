@@ -59,8 +59,9 @@
   "browserslist": [
     "last 2 versions",
     "Firefox ESR",
-    "not node < 10",
-    "not dead or IE >= 11"
+    "not ie < 11",
+    "not dead",
+    "not node < 10"
   ],
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
