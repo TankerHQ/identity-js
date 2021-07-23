@@ -35,6 +35,8 @@ jobs:
         run: yarn install
       - name: Run eslint
         run: yarn lint:js
+      - name: Run lint:ts
+        run: yarn lint:ts
       - name: Run coverage
         run: yarn coverage
   lint:

@@ -6,9 +6,10 @@
     "build": "yarn build:identity",
     "build:identity": "(rm -rf packages/identity/dist || 0) && tsc -b packages/identity/config",
     "lint:js": "eslint \"packages/**/*.ts\"",
+    "lint:ts": "yarn build && yarn eslint --no-ignore --no-eslintrc -c .eslintrc.compat.yml \"packages/**/dist/**/*.js\"",
     "karma": "karma start config/karma/karma.config.ci.js",
     "test": "mocha \"packages/**/src/**/*.spec.ts\" --exit -require ts-node/register --recursive --full-trace --trace-warnings --reporter=spec",
-    "proof": "yarn lint:js && yarn build && yarn test",
+    "proof": "yarn lint:js && yarn lint:ts && yarn test",
     "coverage": "nyc yarn test"
   },
   "dependencies": {
@@ -28,6 +29,7 @@
     "eslint-config-airbnb-typescript": "^12.3.1",
     "eslint-plugin-chai-expect": "2.2.0",
     "eslint-plugin-chai-friendly": "0.6.0",
+    "eslint-plugin-compat": "^3.11.1",
     "eslint-plugin-import": "2.22.1",
     "eslint-plugin-mocha-no-only": "1.1.1",
     "karma": "6.1.1",
@@ -53,6 +55,12 @@
   },
   "workspaces": [
     "packages/*"
+  ],
+  "browserslist": [
+    "last 2 versions",
+    "Firefox ESR",
+    "not node < 10",
+    "not dead or IE >= 11"
   ],
   "nyc": {
     "extends": "@istanbuljs/nyc-config-typescript",
