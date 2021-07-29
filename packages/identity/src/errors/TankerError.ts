@@ -1,6 +1,6 @@
-// @flow
+import { BaseError } from 'make-error';
 
-export class TankerError extends Error {
+export class TankerError extends BaseError {
   constructor(name: string = 'TankerError', message?: string) {
     super();
     this.name = name;
@@ -10,7 +10,7 @@ export class TankerError extends Error {
     }
   }
 
-  toString() {
+  override toString() {
     return `[Tanker] ${super.toString()}`;
   }
 }

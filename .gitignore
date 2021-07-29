@@ -9,6 +9,7 @@ npm*.log
 yarn-*.log
 .nyc_output
 .sass-cache
+*.tsbuildinfo
 !.gitkeep
 __pycache__
 

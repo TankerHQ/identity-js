@@ -1,6 +1,5 @@
 import argparse
 from pathlib import Path
-import re
 import subprocess
 import sys
 
@@ -20,15 +19,6 @@ def version_from_git_tag(git_tag: str) -> str:
     return version
 
 
-def get_package_path(package_name: str) -> Path:
-    m = re.match(r"^@tanker/(.*)$", package_name)
-    p = Path("packages")
-    assert m
-    if m[1]:
-        p = p.joinpath(m[1])
-    return p.joinpath("dist")
-
-
 def version_to_npm_tag(version: str) -> str:
     for tag in ["alpha", "beta"]:
         if tag in version:
@@ -37,7 +27,7 @@ def version_to_npm_tag(version: str) -> str:
 
 
 def publish_npm_package(package_name: str, version: str) -> None:
-    package_path = Path("packages/identity/dist")
+    package_path = Path("packages/identity")
     npm_tag = version_to_npm_tag(version)
     subprocess.run(
         ["npm", "publish", "--access", "public", "--tag", npm_tag],

@@ -1,6 +1,4 @@
-// @flow
 import { expect } from '@tanker/test-utils';
-
 import { TankerError } from '../TankerError';
 import { InvalidArgument } from '../errors/InvalidArgument';
 
@@ -31,21 +29,16 @@ describe('TankerError', () => {
     let error;
     const name = 'SpecificError';
     const message = 'a specific error message';
-
     error = new TankerError();
     expect(error.toString()).to.equal('[Tanker] TankerError');
-
     error = new TankerError(name);
     expect(error.toString()).to.equal(`[Tanker] ${name}`);
-
     error = new TankerError(name, message);
     expect(error.toString()).to.equal(`[Tanker] ${name}: ${message}`);
   });
-
   describe('subclasses', () => {
-    let error;
-    let message;
-
+    let error: TankerError;
+    let message: string;
     before(() => {
       error = new InvalidArgument('size', 'number', null);
       message = 'name: size (number), value: null (null)';

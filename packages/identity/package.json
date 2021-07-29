@@ -4,9 +4,16 @@
   "description": "Tanker Identity SDK",
   "author": "Tanker Team",
   "license": "Apache-2.0",
-  "main": "src/index.js",
-  "module": "es.js",
-  "browser": "browser.js",
+  "main": "dist/node/index.js",
+  "module": "dist/es/index.js",
+  "browser": "dist/browser/index.js",
+  "types": "dist/types/index.d.js",
+  "files": [
+    "dist/",
+    "README.md",
+    "package.json",
+    "LICENSE"
+  ],
   "scripts": {
     "test": "cd ../..; yarn test:identity"
   },
@@ -19,8 +26,8 @@
     "url": "https://github.com/TankerHQ/identity-js/issues"
   },
   "dependencies": {
-    "@babel/runtime-corejs3": "^7.9.0",
-    "@tanker/crypto": "^2.15.0"
+    "@tanker/crypto": "^2.15.0",
+    "make-error": "^1.3.6"
   },
   "devDependencies": {
     "@tanker/test-utils": "0.0.1"

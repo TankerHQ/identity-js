@@ -33,10 +33,10 @@ jobs:
           node-version: 12
       - name: Install packages
         run: yarn install
-      - name: Run flow
-        run: yarn flow
       - name: Run eslint
         run: yarn lint:js
+      - name: Run lint:ts
+        run: yarn lint:ts
       - name: Run coverage
         run: yarn coverage
   lint:

@@ -4,19 +4,20 @@ env:
   node: true
 
 extends:
-  - airbnb-base
+  - "airbnb-typescript/base"
 
-parser: "@babel/eslint-parser"
+parser: "@typescript-eslint/parser"
 parserOptions:
   ecmaVersion: 2018
-  babelOptions:
-    configFile: ./config/babel.config-eslint.js
+  project: # "@typescript-eslint/parser" does not understand project referencies
+    - ./config/tsconfig.tests.json
+    - ./packages/**/tsconfig.browser.json
 
 plugins:
+  - "@typescript-eslint"
   - chai-expect
   - chai-friendly
   - mocha-no-only
-  - flowtype
 
 rules:
   arrow-parens: 0
@@ -54,40 +55,31 @@ rules:
 
   chai-friendly/no-unused-expressions: 2
 
-  flowtype/boolean-style:
-    - error
-    - bool
-  flowtype/define-flow-type: 1
-  flowtype/delimiter-dangle: 0
-  flowtype/generic-spacing:
-    - error
-    - never
-  flowtype/no-mixed: 0
-  flowtype/no-primitive-constructor-types: 2
-  flowtype/no-types-missing-file-annotation: 2
-  flowtype/no-weak-types: 0
-  flowtype/require-parameter-type: 0
-  flowtype/require-return-type: 0
-  flowtype/require-valid-file-annotation:
-    - error
-    - always
-  flowtype/semi: 2
-  flowtype/space-after-type-colon:
-    - error
-    - always
-  flowtype/space-before-generic-bracket:
-    - error
-    - never
-  flowtype/space-before-type-colon:
-    - error
-    - never
-  flowtype/type-id-match: 0
-  flowtype/union-intersection-spacing:
-    - error
-    - always
-
   import/no-named-as-default: 0
   import/prefer-default-export: 0
 
   mocha-no-only/mocha-no-only:
     - error
+
+  "@typescript-eslint/naming-convention":
+    - error
+    - selector: variable
+      format:
+        - camelCase
+        - UPPER_CASE
+        - snake_case
+    - selector: function
+      format:
+        - camelCase
+        - PascalCase
+      leadingUnderscore: allow
+    - selector: typeLike
+      format:
+        - PascalCase
+
+overrides:
+  - files:
+    - "*.test.ts"
+    - "*.spec.ts"
+    rules:
+      '@typescript-eslint/no-unused-expressions': off
