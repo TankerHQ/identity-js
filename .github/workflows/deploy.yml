@@ -25,4 +25,4 @@ jobs:
         env:
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
       - name: Deploy
-        run: python -m poetry run python run-ci.py deploy --git-tag "$(git describe --tags)"
+        run: python -m poetry run python run-ci.py deploy --git-tag "${GITHUB_REF#refs/tags/}"
