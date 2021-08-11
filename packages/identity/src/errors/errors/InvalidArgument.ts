@@ -12,5 +12,8 @@ export class InvalidArgument extends TankerError {
     }
 
     super('InvalidArgument', message);
+
+    // Set the prototype explicitly.
+    Object.setPrototypeOf(this, InvalidArgument.prototype);
   }
 }
