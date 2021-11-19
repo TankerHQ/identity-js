@@ -26,7 +26,8 @@
     "url": "https://github.com/TankerHQ/identity-js/issues"
   },
   "dependencies": {
-    "@tanker/crypto": "^2.24.0"
+    "@tanker/crypto": "^2.24.0",
+    "tslib": "^2.3.1"
   },
   "devDependencies": {
     "@tanker/test-utils": "0.0.1"
