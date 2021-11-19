@@ -176,14 +176,6 @@
   resolved "https://registry.yarnpkg.com/@babel/parser/-/parser-7.14.7.tgz#6099720c8839ca865a2637e6c85852ead0bdb595"
   integrity sha512-X67Z5y+VBJuHB/RjwECp8kSl5uYi0BvRbNeWqkaJCVh+LiTPl19WBUfG627psSgp9rSf6ojuXghQM3ha6qHHdA==
 
-"@babel/runtime-corejs3@^7.9.0":
-  version "7.14.7"
-  resolved "https://registry.yarnpkg.com/@babel/runtime-corejs3/-/runtime-corejs3-7.14.7.tgz#0ef292bbce40ca00f874c9724ef175a12476465c"
-  integrity sha512-Wvzcw4mBYbTagyBVZpAJWI06auSIj033T/yNE0Zn1xcup83MieCddZA7ls3kme17L4NOGBrQ09Q+nKB41RLWBA==
-  dependencies:
-    core-js-pure "^3.15.0"
-    regenerator-runtime "^0.13.4"
-
 "@babel/template@^7.14.5":
   version "7.14.5"
   resolved "https://registry.yarnpkg.com/@babel/template/-/template-7.14.5.tgz#a9bc9d8b33354ff6e55a9c60d1109200a68974f4"
@@ -329,22 +321,22 @@
   resolved "https://registry.yarnpkg.com/@sinonjs/text-encoding/-/text-encoding-0.7.1.tgz#8da5c6530915653f3a1f38fd5f101d8c3f8079c5"
   integrity sha512-+iTbntw2IZPb/anVDbypzfQa+ay64MW0Zo8aJ8gZPWMMK6/OubMVb6lUPMagqjOPnmtauXnFCACVl3O7ogjeqQ==
 
-"@tanker/crypto@^2.15.0":
-  version "2.18.0"
-  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-2.18.0.tgz#aa07a534add48461748e95aa467e478c9a55b91e"
-  integrity sha512-xguSPPHZOtbDLvsAW2pLJTE3XE4rckaZI4obaLXNhstPKFrXdwk4cuzpOKx9oLQtWmsKobEO4zpCSbVs0OA3eg==
+"@tanker/crypto@^2.24.0":
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/@tanker/crypto/-/crypto-2.24.0.tgz#0650c33ecc835460b30b88081d6700209c68765f"
+  integrity sha512-7r2rjofo2ZLChAGU1Vo9tFwdr4zck2QuSZO0z3oghKFaqT7N8H26yJz+SMat2p7bxQ/dzg9KUZEsUaRr7T19uQ==
   dependencies:
-    "@babel/runtime-corejs3" "^7.9.0"
-    "@tanker/errors" "2.18.0"
+    "@tanker/errors" "2.24.0"
     libsodium-wrappers "^0.7.9"
+    tslib "^2.3.1"
     varint "^6.0.0"
 
-"@tanker/errors@2.18.0":
-  version "2.18.0"
-  resolved "https://registry.yarnpkg.com/@tanker/errors/-/errors-2.18.0.tgz#81a094b638d47a80d85e266a5aa469c5879059b6"
-  integrity sha512-6YvQblbWUAY1DkLeW008JFJb+fkVJx25fsIyvYLQWUu0j1LmiqyKkjPL02Adr3PIHfVaw3OlpCt52MBEAhAkSg==
+"@tanker/errors@2.24.0":
+  version "2.24.0"
+  resolved "https://registry.yarnpkg.com/@tanker/errors/-/errors-2.24.0.tgz#344fabc3f5200bbe172223c3f15c3e0ec1f9111e"
+  integrity sha512-HqmkT5VvbgJhUBHM/yQgTZ5jz7qlsbVjdYVGqnFwCUbDOON284IVwBRcNYJB89ZU4gdMATDQ2GxKjPKhoUKQbA==
   dependencies:
-    "@babel/runtime-corejs3" "^7.9.0"
+    tslib "^2.3.1"
 
 "@tootallnate/once@1":
   version "1.1.2"
@@ -1236,7 +1228,7 @@ cookie@~0.4.1:
   resolved "https://registry.yarnpkg.com/cookie/-/cookie-0.4.1.tgz#afd713fe26ebd21ba95ceb61f9a8116e50a537d1"
   integrity sha512-ZwrFkGJxUR3EIoXtO+yVE69Eb7KlixbaeAWfBQB9vVsNn/o+Yw69gBWSSDK825hQNdN+wF8zELf3dFNl/kxkUA==
 
-core-js-pure@^3.15.0, core-js-pure@^3.15.2:
+core-js-pure@^3.15.2:
   version "3.15.2"
   resolved "https://registry.yarnpkg.com/core-js-pure/-/core-js-pure-3.15.2.tgz#c8e0874822705f3385d3197af9348f7c9ae2e3ce"
   integrity sha512-D42L7RYh1J2grW8ttxoY1+17Y4wXZeKe7uyplAI3FkNQyI5OgBIAjUfFiTPfL1rs0qLpxaabITNbjKl1Sp82tA==
@@ -3327,11 +3319,6 @@ readdirp@~3.6.0:
   dependencies:
     picomatch "^2.2.1"
 
-regenerator-runtime@^0.13.4:
-  version "0.13.7"
-  resolved "https://registry.yarnpkg.com/regenerator-runtime/-/regenerator-runtime-0.13.7.tgz#cac2dacc8a1ea675feaabaeb8ae833898ae46f55"
-  integrity sha512-a54FxoJDIr27pgf7IgeQGxmqUNYrcV338lf/6gH456HZ/PhX+5BcwHXG9ajESmwe6WRO0tAzRUrRmNONWgkrew==
-
 regexpp@^3.1.0:
   version "3.2.0"
   resolved "https://registry.yarnpkg.com/regexpp/-/regexpp-3.2.0.tgz#0425a2768d8f23bad70ca4b90461fa2f1213e1b2"
@@ -3874,7 +3861,7 @@ tsconfig-paths@^3.9.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
-tslib@^1.8.1, tslib@^2.3.0:
+tslib@^1.8.1, tslib@^2.3.0, tslib@^2.3.1:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.3.0.tgz#803b8cdab3e12ba581a4ca41c8839bbb0dacb09e"
   integrity sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg==
