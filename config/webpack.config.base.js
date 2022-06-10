@@ -10,12 +10,16 @@ const webFallback = {
   // random number generator. In our case `window.crypto` is always available
   crypto: false,
 
+  // Node.js polyfills were removed from default behavior in Webpack 5
+  // But buffer and process.nextTick are used in `readable-stream` see the README:
+  // - https://github.com/nodejs/readable-stream#usage-in-browsers
+  buffer: require.resolve('buffer/'),
   process: require.resolve('process/browser'),
 };
 
 const getTsLoaders = (env) => {
   const tsLoaderCompilerOptions = {
-    target: 'es5',
+    target: 'es2019',
     declaration: false,
     importHelpers: true,
     downlevelIteration: true,
@@ -67,6 +71,8 @@ const makeBaseConfig = ({ mode, target, devtool, plugins }) => {
     output: {
       filename: mode === 'development' ? 'bundle.js' : 'bundle-[chunkhash].js',
       publicPath: '/',
+      // the default function (md4) is not supported by OpenSSL by default starting in Node 17
+      hashFunction: 'xxhash64',
     },
 
     module: {
