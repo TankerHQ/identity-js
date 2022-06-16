@@ -56,5 +56,6 @@ jobs:
       - name: Run python linters
         run: |
           python -m poetry run black --check run-ci.py
-          python -m poetry run mypy run-ci.py
           python -m poetry run flake8 run-ci.py
+          python -m poetry run isort --check --profile black run-ci.py
+          python -m poetry run mypy run-ci.py
