@@ -17,6 +17,7 @@
 
 [![License][license-badge]][license-link]
 [![Build][actions-badge]][actions-link]
+[![Coverage][codecov-badge]][codecov-link]
 
 # Encryption SDKs for JavaScript
 
