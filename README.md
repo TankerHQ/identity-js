@@ -13,11 +13,12 @@
 [identity_npm-badge]: https://img.shields.io/npm/v/@tanker/identity.svg
 [identity_npm-link]: https://npmjs.com/package/@tanker/identity
 
-<a href="#readme"><img src="https://tanker.io/images/github-logo.png" alt="Tanker logo" width="180" /></a>
+<a href="#readme"><img src="https://raw.githubusercontent.com/TankerHQ/spec/master/img/tanker-logotype-blue-nomargin-350.png" alt="Tanker logo" width="175" /></a>
 
 [![License][license-badge]][license-link]
 [![Build][actions-badge]][actions-link]
 [![Coverage][codecov-badge]][codecov-link]
+[![@tanker/identity](identity_npm-badge)](identity_npm-link)
 
 # Encryption SDKs for JavaScript
 
