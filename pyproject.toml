@@ -5,7 +5,7 @@ description = "Tanker Identity Node.js SDK"
 authors = ["Tanker dev team <tech@tanker.io>"]
 
 [tool.poetry.dependencies]
-python = "^3.8"
+python = "^3.11"
 tbump = "6.9.0"
 
 [tool.poetry.dev-dependencies]
