@@ -4,7 +4,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "build": "yarn build:identity",
-    "build:identity": "(rm -rf packages/identity/dist || 0) && tsc -b packages/identity/config",
+    "build:identity": "(rm -rf packages/identity/dist || 0) && tsc --build packages/identity/config",
     "lint:js": "eslint \"packages/**/*.ts\"",
     "lint:ts": "yarn build && yarn eslint --no-ignore --no-eslintrc -c .eslintrc.compat.yml \"packages/**/dist/**/*.js\"",
     "karma": "karma start config/karma/karma.config.ci.js",
@@ -13,46 +13,43 @@
     "coverage": "nyc yarn test"
   },
   "dependencies": {
-    "@istanbuljs/nyc-config-typescript": "^1.0.1",
-    "@types/chai": "^4.2.18",
-    "@types/chai-as-promised": "^7.1.4",
-    "@types/mocha": "^8.2.2",
-    "@types/node": "^15.12.4",
-    "@types/sinon": "^10.0.2",
-    "@types/webpack": "^5.28.0",
-    "@types/webpack-env": "^1.16.0",
-    "@typescript-eslint/eslint-plugin": "^5.4.0",
-    "@typescript-eslint/parser": "^5.4.0",
+    "@types/chai": "^4.3.4",
+    "@types/chai-as-promised": "^7.1.5",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "^18.11.18",
+    "@types/sinon": "^10.0.13",
+    "@types/webpack": "^5.28.5",
+    "@types/webpack-env": "^1.18.4",
+    "@typescript-eslint/eslint-plugin": "^6.11.0",
+    "@typescript-eslint/parser": "^6.11.0",
     "buffer": "6.0.3",
-    "core-js-pure": "^3.15.2",
-    "eslint": "^7.28.0",
-    "eslint-config-airbnb-typescript": "^12.3.1",
-    "eslint-plugin-chai-expect": "2.2.0",
-    "eslint-plugin-chai-friendly": "0.6.0",
-    "eslint-plugin-compat": "^3.11.1",
-    "eslint-plugin-import": "2.22.1",
+    "eslint": "8.36.0",
+    "eslint-config-airbnb-typescript": "17.1.0",
+    "eslint-plugin-chai-expect": "3.0.0",
+    "eslint-plugin-chai-friendly": "0.7.2",
+    "eslint-plugin-compat": "4.2.0",
+    "eslint-plugin-import": "2.29.0",
     "eslint-plugin-mocha-no-only": "1.1.1",
-    "karma": "6.3.20",
-    "karma-browserstack-launcher": "1.4.0",
-    "karma-chrome-launcher": "3.1.0",
+    "karma": "6.4.1",
+    "karma-browserstack-launcher": "1.6.0",
+    "karma-chrome-launcher": "3.1.1",
     "karma-edgium-launcher": "https://github.com/matracey/karma-edgium-launcher.git#253b4b506236d16d3e7c450196db1a22ce37aeba",
-    "karma-firefox-launcher": "2.1.0",
-    "karma-ie-launcher": "1.0.0",
+    "karma-firefox-launcher": "2.1.2",
     "karma-mocha": "2.0.1",
     "karma-mocha-reporter": "2.2.5",
     "karma-opera-launcher": "1.0.0",
-    "karma-safarinative-launcher": "1.1.0",
+    "karma-safari-launcher": "https://github.com/RLovelett/karma-safari-launcher.git#a1407eeaf0822a5e00e2a2b57c112c82f052a8ff",
     "karma-sourcemap-loader": "0.3.8",
     "karma-webpack": "5.0.0",
-    "mocha": "10.0.0",
+    "mocha": "^10.2.0",
     "nyc": "15.1.0",
     "process": "^0.11.10",
-    "ts-loader": "^9.2.3",
-    "ts-node": "^10.0.0",
+    "ts-loader": "~9.4.2",
+    "ts-node": "~10.9.1",
     "tslib": "^2.3.0",
-    "typescript": "^4.5.2",
-    "util": "^0.12.3",
-    "webpack": "^5.41.1"
+    "typescript": "~5.2.2",
+    "util": "^0.12.5",
+    "webpack": "5.84.0"
   },
   "workspaces": [
     "packages/*"
@@ -60,12 +57,11 @@
   "browserslist": [
     "last 2 versions",
     "Firefox ESR",
-    "node >= 14",
+    "node >= 18",
     "not IE 11",
     "not dead"
   ],
   "nyc": {
-    "extends": "@istanbuljs/nyc-config-typescript",
     "reporter": [
       "lcov",
       "text-summary"
@@ -88,6 +84,6 @@
     "ansi-regex": "^5.0.1"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   }
 }
