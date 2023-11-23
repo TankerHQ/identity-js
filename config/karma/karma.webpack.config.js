@@ -1,4 +1,3 @@
-// @noflow
 const { makeBaseConfig } = require('../webpack.config.base');
 
 const makePatchedBaseConfig = ({ mode, target, devtool, plugins }) => {

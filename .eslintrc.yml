@@ -1,7 +1,9 @@
 ---
 env:
+  browser: true
   mocha: true
   node: true
+  webextensions: true
 
 extends:
   - "airbnb-typescript/base"
@@ -14,6 +16,7 @@ parserOptions:
     - ./packages/**/tsconfig.browser.json
 
 plugins:
+  - import
   - "@typescript-eslint"
   - chai-expect
   - chai-friendly
@@ -33,14 +36,24 @@ rules:
   no-console:
     - warn
     - allow:
-      - warn
-      - error
+        - warn
+        - error
   no-continue: 0
   no-mixed-operators: 0
   no-plusplus:
     - error
     - allowForLoopAfterthoughts: true
   no-restricted-syntax: 0
+  no-restricted-exports:
+    - error
+    - restrictedNamedExports:
+        - then
+      restrictDefaultExports:
+        direct: true
+        named: true
+        defaultFrom: true
+        namedFrom: true
+        namespaceFrom: true
   no-underscore-dangle:
     - error
     - allowAfterThis: true
@@ -56,10 +69,17 @@ rules:
   chai-friendly/no-unused-expressions: 2
 
   import/no-named-as-default: 0
+  import/no-unresolved:
+    - error
   import/prefer-default-export: 0
 
   mocha-no-only/mocha-no-only:
     - error
+
+  "@typescript-eslint/lines-between-class-members":
+    - error
+    - always
+    - exceptAfterSingleLine: true
 
   "@typescript-eslint/naming-convention":
     - error
@@ -79,7 +99,7 @@ rules:
 
 overrides:
   - files:
-    - "*.test.ts"
-    - "*.spec.ts"
+      - "*.test.ts"
+      - "*.spec.ts"
     rules:
-      '@typescript-eslint/no-unused-expressions': off
+      "@typescript-eslint/no-unused-expressions": off
