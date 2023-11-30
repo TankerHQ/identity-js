@@ -13,4 +13,4 @@ yarn-*.log
 !.gitkeep
 __pycache__
 
-package-lock.json
+yarn.lock

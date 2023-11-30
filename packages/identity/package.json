@@ -15,7 +15,7 @@
     "LICENSE"
   ],
   "scripts": {
-    "test": "cd ../..; yarn test:identity"
+    "test": "cd ../..; npm run test:identity"
   },
   "homepage": "https://tanker.io/",
   "repository": {

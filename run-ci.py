@@ -26,7 +26,7 @@ def version_to_npm_tag(version: str) -> str:
     return "latest"
 
 
-def publish_npm_package(package_name: str, version: str) -> None:
+def publish_npm_package(version: str) -> None:
     package_path = Path("packages/identity")
     npm_tag = version_to_npm_tag(version)
     subprocess.run(
@@ -37,11 +37,11 @@ def publish_npm_package(package_name: str, version: str) -> None:
 
 
 def deploy_sdk(*, git_tag: str) -> None:
-    subprocess.run(["yarn", "install"], check=True)
+    subprocess.run(["npm", "install"], check=True)
     version = version_from_git_tag(git_tag)
     tbump.bump_files(version)
-    subprocess.run(["yarn", "build:identity"], check=True)
-    publish_npm_package("@tanker/identity", version)
+    subprocess.run(["npm", "run", "build:identity"], check=True)
+    publish_npm_package(version)
 
 
 def main() -> None:
