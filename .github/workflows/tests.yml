@@ -20,9 +20,9 @@ jobs:
         with:
           node-version: ${{ matrix.node_version }}
       - name: Install packages
-        run: yarn install
+        run: npm install
       - name: Tests on ${{ matrix.os }} with Node ${{ matrix.node_version }}
-        run: yarn test
+        run: npm run test
   coverage:
     runs-on: ubuntu-20.04
     steps:
@@ -31,13 +31,13 @@ jobs:
         with:
           node-version: "18"
       - name: Install packages
-        run: yarn install
+        run: npm install
       - name: Run eslint
-        run: yarn lint:js
+        run: npm run lint:js
       - name: Run lint:ts
-        run: yarn lint:ts
+        run: npm run lint:ts
       - name: Run coverage
-        run: yarn coverage
+        run: npm run coverage
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v3
   lint:
