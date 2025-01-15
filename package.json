@@ -16,7 +16,7 @@
     "@types/chai": "^4.3.4",
     "@types/chai-as-promised": "^7.1.5",
     "@types/mocha": "^10.0.1",
-    "@types/node": "^18.11.18",
+    "@types/node": "^22.10.3",
     "@types/sinon": "^10.0.13",
     "@types/webpack": "^5.28.5",
     "@types/webpack-env": "^1.18.4",
@@ -57,7 +57,7 @@
   "browserslist": [
     "last 2 versions",
     "Firefox ESR",
-    "node >= 18",
+    "node >= 20",
     "not IE 11",
     "not dead"
   ],
@@ -84,6 +84,6 @@
     "ansi-regex": "^5.0.1"
   },
   "engines": {
-    "node": ">=18"
+    "node": ">=20"
   }
 }

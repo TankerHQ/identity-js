@@ -8,15 +8,15 @@ jobs:
       matrix:
         os:
           - ubuntu-20.04
-          - macos-11
+          - macos-13
           - windows-2019
         node_version:
-          - "18"
           - "20"
+          - "22"
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node_version }}
       - name: Install packages
@@ -26,10 +26,10 @@ jobs:
   coverage:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v1
-      - uses: actions/setup-node@v2
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "22"
       - name: Install packages
         run: npm install
       - name: Run eslint
@@ -39,11 +39,11 @@ jobs:
       - name: Run coverage
         run: npm run coverage
       - name: Upload coverage to Codecov
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v5
   lint:
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v1
+      - uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v1
         with:
