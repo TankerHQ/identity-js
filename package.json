@@ -7,7 +7,6 @@
     "build:identity": "(rm -rf packages/identity/dist || 0) && tsc --build packages/identity/config",
     "lint:js": "eslint \"packages/**/*.ts\"",
     "lint:ts": "npm run build && eslint --no-ignore --no-eslintrc -c .eslintrc.compat.yml \"packages/**/dist/**/*.js\"",
-    "karma": "karma start config/karma/karma.config.ci.js",
     "test": "mocha \"packages/**/src/**/*.spec.ts\" --exit -require ts-node/register --recursive --full-trace --trace-warnings --reporter=spec",
     "proof": "npm run lint:js && npm run lint:ts && npm run test",
     "coverage": "nyc npm run test"
@@ -18,8 +17,6 @@
     "@types/mocha": "^10.0.1",
     "@types/node": "^22.10.3",
     "@types/sinon": "^10.0.13",
-    "@types/webpack": "^5.28.5",
-    "@types/webpack-env": "^1.18.4",
     "@typescript-eslint/eslint-plugin": "^6.11.0",
     "@typescript-eslint/parser": "^6.11.0",
     "buffer": "6.0.3",
@@ -30,17 +27,6 @@
     "eslint-plugin-compat": "4.2.0",
     "eslint-plugin-import": "2.29.0",
     "eslint-plugin-mocha-no-only": "1.1.1",
-    "karma": "6.4.1",
-    "karma-browserstack-launcher": "1.6.0",
-    "karma-chrome-launcher": "3.1.1",
-    "karma-edgium-launcher": "https://github.com/matracey/karma-edgium-launcher.git#253b4b506236d16d3e7c450196db1a22ce37aeba",
-    "karma-firefox-launcher": "2.1.2",
-    "karma-mocha": "2.0.1",
-    "karma-mocha-reporter": "2.2.5",
-    "karma-opera-launcher": "1.0.0",
-    "karma-safari-launcher": "https://github.com/RLovelett/karma-safari-launcher.git#a1407eeaf0822a5e00e2a2b57c112c82f052a8ff",
-    "karma-sourcemap-loader": "0.3.8",
-    "karma-webpack": "5.0.0",
     "mocha": "^10.2.0",
     "nyc": "15.1.0",
     "process": "^0.11.10",
@@ -48,8 +34,7 @@
     "ts-node": "~10.9.1",
     "tslib": "^2.3.0",
     "typescript": "~5.2.2",
-    "util": "^0.12.5",
-    "webpack": "5.84.0"
+    "util": "^0.12.5"
   },
   "workspaces": [
     "packages/*"
